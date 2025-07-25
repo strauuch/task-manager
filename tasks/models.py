@@ -7,21 +7,20 @@ from django.urls import reverse
 class TaskType(models.Model):
     name = models.CharField(max_length=155)
 
-
     class Meta:
         verbose_name = "Task Type"
         verbose_name_plural = "Task Types"
-        ordering = ['name']
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
 
 
 class Priority(models.TextChoices):
-    LOW = 'low', 'Low'
-    MEDIUM = 'medium', 'Medium'
-    HIGH = 'high', 'High'
-    CRITICAL = 'critical', 'Critical'
+    LOW = "low", "Low"
+    MEDIUM = "medium", "Medium"
+    HIGH = "high", "High"
+    CRITICAL = "critical", "Critical"
 
 
 class Task(models.Model):
@@ -30,25 +29,28 @@ class Task(models.Model):
     deadline = models.DateTimeField()
     is_complete = models.BooleanField(default=False)
     priority = models.CharField(
-        max_length=10,
-        choices=Priority.choices,
-        default=Priority.MEDIUM
+        max_length=10, choices=Priority.choices, default=Priority.MEDIUM
     )
     task_type = models.ForeignKey(TaskType, on_delete=models.SET_NULL, null=True)
-    assignee = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="assigned_tasks")
+    assignee = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="assigned_tasks"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "Task"
         verbose_name_plural = "Tasks"
-        ordering = ['deadline']
+        ordering = ["deadline"]
 
     def __str__(self):
-        return f"Task {self.name}, priority: {self.priority}, deadline: {self.deadline},"
+        return (
+            f"Task {self.name}, priority: {self.priority}, deadline: {self.deadline},"
+        )
 
     def get_absolute_url(self):
         return reverse("task-detail", kwargs={"pk": self.pk})
+
 
 class Position(models.Model):
     name = models.CharField(max_length=155)
@@ -56,7 +58,7 @@ class Position(models.Model):
     class Meta:
         verbose_name = "Position"
         verbose_name_plural = "Positions"
-        ordering = ['name']
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
@@ -66,7 +68,7 @@ class Worker(AbstractUser):
     position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True)
 
     class Meta:
-        ordering = ['position__name']
+        ordering = ["position__name"]
 
     def __str__(self):
         return f"{self.position.name if self.position else ''} {self.first_name} {self.last_name}"
