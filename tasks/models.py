@@ -26,10 +26,10 @@ class Priority(models.TextChoices):
 class Task(models.Model):
     name = models.CharField(max_length=155)
     description = models.TextField()
-    deadline = models.DateTimeField()
+    deadline = models.DateTimeField(null=True, blank=True, default=None)
     is_complete = models.BooleanField(default=False)
     priority = models.CharField(
-        max_length=10, choices=Priority.choices, default=Priority.MEDIUM
+        max_length=10, choices=Priority.choices, default=Priority.LOW
     )
     task_type = models.ForeignKey(TaskType, on_delete=models.SET_NULL, null=True)
     assignee = models.ManyToManyField(
