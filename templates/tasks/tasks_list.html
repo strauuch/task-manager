@@ -22,7 +22,15 @@
         <td><a href="#">{{ task.name }}</a></td>
         <td>{{ task.priority }}</td>
         <td>{{ task.is_complete }}</td>
-        <td>{{ task.assignee }}</td>
+        <td>
+          <ul>
+              {% for user in task.assignee.all %}
+                <li>{{ user }}{% if not forloop.last %}</li> {% endif %}
+              {% empty %}
+                —
+              {% endfor %}
+          </ul>
+        </td>
         <td>{{ task.task_type }}</td>
         <td><b>{{ task.deadline }}</b></td>
         <td>{{ task.updated_at }}</td>
