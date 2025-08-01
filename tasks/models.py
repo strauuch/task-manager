@@ -62,7 +62,7 @@ class Position(models.Model):
         ordering = ["name"]
 
     def __str__(self):
-        return f"Position: {self.name}: {self.description}" if self.description else f"Position: {self.name}"
+        return self.name
 
 
 class Worker(AbstractUser):
