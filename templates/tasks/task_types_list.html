@@ -4,7 +4,7 @@
   <h1>Task Types</h1>
   <ul>
     {% for task_type in task_types %}
-      <li>{{ task_type.name }}</li>
+      <li><a href="#">{{ task_type.name }}</a></li>
     {% empty %}
       <li>No task types available.</li>
     {% endfor %}

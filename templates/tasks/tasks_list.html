@@ -4,23 +4,32 @@
   <h1>All Tasks</h1>
 
   {% if tasks %}
-    <ul>
-      {% for task in tasks %}
-        <li>
-          <strong>{{ task.name }}</strong>
-          {% if task.description %}
-            – {{ task.description|truncatewords:10 }}
-          {% endif %}
-          <br>
-          <small>
-            Type: {{ task.task_type }} |
-            Priority: {{ task.priority }} |
-            Deadline: {{ task.deadline|date:"Y-m-d" }}
-          </small>
-        </li>
-        <hr>
-      {% endfor %}
-    </ul>
+    <table class="table table-striped">
+      <tr>
+        <td>ID</td>
+        <td>Task Name</td>
+        <td>Priority</td>
+        <td>Status</td>
+        <td>Assignee</td>
+        <td>Task type</td>
+        <td>Deadline</td>
+        <td>Update at</td>
+        <td>Created at</td>
+      </tr>
+    {% for task in tasks %}
+      <tr>
+        <td><a href="#">{{ task.id }}</a></td>
+        <td><a href="#">{{ task.name }}</a></td>
+        <td>{{ task.priority }}</td>
+        <td>{{ task.is_complete }}</td>
+        <td>{{ task.assignee }}</td>
+        <td>{{ task.task_type }}</td>
+        <td><b>{{ task.deadline }}</b></td>
+        <td>{{ task.updated_at }}</td>
+        <td>{{ task.created_at }}</td>
+      </tr>
+    {% endfor %}
+    </table>
   {% else %}
     <p>No tasks available.</p>
   {% endif %}

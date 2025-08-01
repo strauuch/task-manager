@@ -4,7 +4,7 @@
   <h1>Positions</h1>
   <ul>
     {% for position in positions %}
-      <li>{{ position.name }}</li>
+      <li><a href="#">{{ position.name }}</a></li>
     {% empty %}
       <li>No positions available.</li>
     {% endfor %}
