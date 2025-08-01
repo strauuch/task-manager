@@ -68,7 +68,7 @@ class Worker(AbstractUser):
     position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True)
 
     class Meta:
-        ordering = ["position__name"]
+        ordering = ["last_name"]
 
     def __str__(self):
         return f"{self.position.name if self.position else ''} {self.first_name} {self.last_name}"
