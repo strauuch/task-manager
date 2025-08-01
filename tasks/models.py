@@ -45,7 +45,7 @@ class Task(models.Model):
 
     def __str__(self):
         return (
-            f"Task {self.name}, priority: {self.priority}, deadline: {self.deadline},"
+            f"Task {self.name}, priority: {self.priority}, deadline: {self.deadline}"
         )
 
     def get_absolute_url(self):
@@ -72,7 +72,10 @@ class Worker(AbstractUser):
         ordering = ["last_name"]
 
     def __str__(self):
-        return f"{self.position.name if self.position else ''} {self.first_name} {self.last_name}"
+        if self.position:
+            return f"{self.position.name} {self.first_name} {self.last_name}"
+        else:
+            return f"{self.first_name} {self.last_name}"
 
     def get_absolute_url(self):
         return reverse("worker-detail", kwargs={"pk": self.pk})

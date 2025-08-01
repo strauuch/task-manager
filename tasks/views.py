@@ -34,6 +34,9 @@ class TaskListView(generic.ListView):
     template_name = "tasks/tasks_list.html"
     paginate_by = 10
 
+    def get_queryset(self):
+        return Task.objects.select_related("task_type")
+
 
 class WorkerListView(generic.ListView):
     """View class for the workers page of the site."""
@@ -42,6 +45,9 @@ class WorkerListView(generic.ListView):
     context_object_name = "workers"
     template_name = "tasks/workers_list.html"
     paginate_by = 10
+
+    def get_queryset(self):
+        return Worker.objects.select_related("position")
 
 
 class PositionListView(generic.ListView):
