@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>All Tasks</h1>
+
+  {% if tasks %}
+    <ul>
+      {% for task in tasks %}
+        <li>
+          <strong>{{ task.name }}</strong>
+          {% if task.description %}
+            – {{ task.description|truncatewords:10 }}
+          {% endif %}
+          <br>
+          <small>
+            Type: {{ task.task_type }} |
+            Priority: {{ task.priority }} |
+            Deadline: {{ task.deadline|date:"Y-m-d" }}
+          </small>
+        </li>
+        <hr>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No tasks available.</p>
+  {% endif %}
+{% endblock %}
