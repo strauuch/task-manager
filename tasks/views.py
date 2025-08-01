@@ -23,7 +23,7 @@ class TaskTypeListView(generic.ListView):
 
     model = TaskType
     context_object_name = "task_types"
-    template_name = "tasks/task_type_list.html"
+    template_name = "tasks/task_types_list.html"
     paginate_by = 10
 
 class TaskListView(generic.ListView):
