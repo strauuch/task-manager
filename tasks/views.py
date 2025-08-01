@@ -38,6 +38,11 @@ class TaskListView(generic.ListView):
         return Task.objects.select_related("task_type")
 
 
+class TaskDetailView(generic.DetailView):
+    """View class for the task detail page of the site."""
+    model = Task
+
+
 class WorkerListView(generic.ListView):
     """View class for the workers page of the site."""
 
