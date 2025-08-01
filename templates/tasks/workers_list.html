@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>
+      Worker List
+    </h1>
+
+    {% if workers %}
+    <table class="table">
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Position</th>
+      </tr>
+    {% for worker in workers %}
+      <tr>
+        <td>{{ worker.id }}</td>
+        <td>{{ worker.username }}</td>
+        <td>{{ worker.first_name }}</td>
+        <td>{{ worker.last_name }}</td>
+        <td>{{ worker.position }}</td>
+      </tr>
+    {% endfor %}
+
+    </table>
+    {% else %}
+      <p>There are no workers in the task manager.</p>
+    {% endif %}
+{% endblock %}

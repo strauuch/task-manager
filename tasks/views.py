@@ -33,3 +33,12 @@ class TaskListView(generic.ListView):
     context_object_name = "tasks"
     template_name = "tasks/tasks_list.html"
     paginate_by = 10
+
+
+class WorkerListView(generic.ListView):
+    """View class for the workers page of the site."""
+
+    model = Worker
+    context_object_name = "workers"
+    template_name = "tasks/workers_list.html"
+    paginate_by = 10
