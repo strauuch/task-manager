@@ -73,9 +73,9 @@ class Worker(AbstractUser):
 
     def __str__(self):
         if self.position:
-            return f"{self.position.name} {self.first_name} {self.last_name}"
+            return f"{self.username} ({self.position.name} {self.first_name} {self.last_name})"
         else:
-            return f"{self.first_name} {self.last_name}"
+            return f"{self.username} ({self.first_name} {self.last_name})"
 
     def get_absolute_url(self):
         return reverse("worker-detail", kwargs={"pk": self.pk})
