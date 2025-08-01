@@ -54,6 +54,7 @@ class Task(models.Model):
 
 class Position(models.Model):
     name = models.CharField(max_length=155)
+    description = models.TextField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Position"
@@ -61,7 +62,7 @@ class Position(models.Model):
         ordering = ["name"]
 
     def __str__(self):
-        return self.name
+        return f"Position: {self.name}: {self.description}" if self.description else f"Position: {self.name}"
 
 
 class Worker(AbstractUser):
