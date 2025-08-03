@@ -1,23 +1,56 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Worker Detail Page</h1>
+  <section class="worker-header">
+    <h1>{{ worker.first_name }} {{ worker.last_name }}</h1>
+    <h4>
+      {% if worker.position %}
+        Position: {{ worker.position.name }}
+      {% else %}
+        Position: —
+      {% endif %}
+    </h4>
+  </section>
 
-  <div>
-    {{ worker.first_name }} {{ worker.last_name }}<br>
-    Position: {{ worker.position.name }}<br>
-    Username: {{ worker.username }}<br>
-    Email: {{ worker.email }}<br>
+  <section class="worker-info">
+    <p><strong>Username:</strong> {{ worker.username }}</p>
+    <p><strong>Email:</strong> {{ worker.email }}</p>
+  </section>
 
-    {% if worker.assigned_tasks.all %}
-      <h3>Assigned Tasks:</h3>
-      <ul>
-        {% for task in worker.assigned_tasks.all %}
-          <li>{{ task }}</li>
-        {% endfor %}
-      </ul>
+  <section class="assigned-tasks">
+    <h2>Assigned Tasks</h2>
+
+    {% if worker.assigned_tasks.exists %}
+      <table class="task-table">
+        <thead>
+          <tr>
+            <th>Task Name</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Deadline</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for task in worker.assigned_tasks.all %}
+            <tr>
+              <td><a href="{{ task.get_absolute_url }}">{{ task.name }}</a></td>
+              <td>{{ task.get_priority_display }}</td>
+              <td>{{ task.get_status_display }}</td>
+              <td>
+                {% if task.deadline %}
+                  {{ task.deadline|time:"H:i" }}, {{ task.deadline|date:"d M" }}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+              <td>{{ task.task_type.name }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     {% else %}
-      <p>This worker has no assigned tasks now.</p>
+      <p>This worker has no assigned tasks.</p>
     {% endif %}
-  </div>
+  </section>
 {% endblock %}
