@@ -55,6 +55,11 @@ class WorkerListView(generic.ListView):
         return Worker.objects.select_related("position")
 
 
+class WorkerDetailView(generic.DetailView):
+    """View class for the worker detail page of the site."""
+    model = Worker
+
+
 class PositionListView(generic.ListView):
     """View class for the positions page of the site."""
 
