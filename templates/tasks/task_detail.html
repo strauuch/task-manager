@@ -1,32 +1,49 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>{{ task.name }}</h1>
-  <h4>ID: {{ task.id }} ---
-    {% if task.is_complete %}
-      Complete
-    {% else %}
-      In progress
-    {% endif %}
-  </h4>
+  <div class="task-detail">
 
-  <div>
-    <br>
-    <p><strong>Deadline: {{ task.deadline }}</strong></p>
-    <p><strong>Priority: {{ task.priority }}</strong></p>
-    <br>Task type: {{ task.task_type }}
-    <br>Created ate: {{ task.created_at }}
-    {% if task.updated_at %}
-      <br>Updated ate: {{ task.updated_at }}
-    {% endif %}
-      <div><br>
-        Assignee:
-      {% for user in task.assignee.all %}
-        <li>{{ user }}{% if not forloop.last %}</li> {% endif %}
-      {% empty %}
-        —
-      {% endfor %}
-      </div>
-    <br><p>Description: {{ task.description }}</p>
+    <div class="task-header">
+      <h1>
+        {{ task.name }}
+        <span class="status-indicator {% if task.is_complete %}complete{% else %}in-progress{% endif %}"></span>
+      </h1>
+      <h4>
+        ID: {{ task.id }}
+        <br>
+        Status: {{ task.status }}
+      </h4>
+    </div>
+
+    <div class="task-info">
+      <p><strong>Deadline:</strong> {{ task.deadline|time:"H:i" }} {{ task.deadline|date:"d.m" }}</p>
+      <p><strong>Priority:</strong>
+        <span class="priority-indicator {{ task.priority }}">
+          {{ task.get_priority_display }}
+        </span>
+      </p>
+      <p><strong>Task Type:</strong> {{ task.task_type }}</p>
+      <p><strong>Created at:</strong> {{ task.created_at|time:"H:i" }} {{ task.created_at|date:"d.m" }}</p>
+      {% if task.updated_at %}
+        <p><strong>Updated at:</strong> {{ task.updated_at|time:"H:i" }} {{ task.updated_at|date:"d.m" }}</p>
+      {% endif %}
+    </div>
+
+    <div class="task-assignees">
+      <strong>Assignees:</strong>
+      <ul>
+        {% for user in task.assignee.all %}
+          <li>{{ user }}</li>
+        {% empty %}
+          <li>—</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="task-description">
+      <h3>Description</h3>
+      <p>{{ task.description }}</p>
+    </div>
+
   </div>
 {% endblock %}

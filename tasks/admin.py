@@ -6,8 +6,8 @@ from .models import Task, TaskType, Position, Worker
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ("name", "priority", "deadline", "is_complete")
-    list_filter = ("priority", "is_complete", "deadline")
+    list_display = ("name", "priority", "deadline", "status")
+    list_filter = ("priority", "status", "deadline")
     search_fields = ("name", "description")
     filter_horizontal = ("assignee",)
     autocomplete_fields = ("task_type",)

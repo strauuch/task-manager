@@ -21,7 +21,7 @@
         <td><a href="{{ task.get_absolute_url }}">{{ task.id }}</a></td>
         <td><a href="{{ task.get_absolute_url }}">{{ task.name }}</a></td>
         <td>{{ task.priority }}</td>
-        <td>{{ task.is_complete }}</td>
+        <td>{{ task.status }}</td>
         <td>
           <ul>
               {% for user in task.assignee.all %}

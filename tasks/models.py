@@ -22,12 +22,23 @@ class Priority(models.TextChoices):
     HIGH = "high", "High"
     CRITICAL = "critical", "Critical"
 
+class Status(models.TextChoices):
+    PENDING = "pending", "Pending"
+    IN_PROGRESS = "in_progress", "In Progress"
+    PAUSED = "paused", "Paused"
+    CANCELED = "canceled", "Canceled"
+    COMPLETED = "completed", "Completed"
+    WFR = "wfr", "Waiting for Review"
+    BLOCKED = "blocked", "Blocked"
+
 
 class Task(models.Model):
     name = models.CharField(max_length=155)
     description = models.TextField()
     deadline = models.DateTimeField(null=True, blank=True, default=None)
-    is_complete = models.BooleanField(default=False)
+    status = models.CharField(
+        max_length=25, choices=Status.choices, default=Status.PENDING
+    )
     priority = models.CharField(
         max_length=10, choices=Priority.choices, default=Priority.LOW
     )
