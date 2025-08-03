@@ -1,6 +1,13 @@
 from django.urls import path
 
-from tasks.views import (index, TaskTypeListView, TaskListView, WorkerListView, PositionListView, TaskDetailView, )
+from tasks.views import (
+    index,
+    TaskTypeListView,
+    TaskListView,
+    WorkerListView,
+    PositionListView,
+    TaskDetailView,
+)
 
 urlpatterns = [
     path(

@@ -18,8 +18,8 @@
       </tr>
     {% for task in tasks %}
       <tr>
-        <td><a href="{% url 'task-detail' task.id %}">{{ task.id }}</a></td>
-        <td><a href="{% url 'task-detail' task.id %}">{{ task.name }}</a></td>
+        <td><a href="{{ task.get_absolute_url }}">{{ task.id }}</a></td>
+        <td><a href="{{ task.get_absolute_url }}">{{ task.name }}</a></td>
         <td>{{ task.priority }}</td>
         <td>{{ task.is_complete }}</td>
         <td>
