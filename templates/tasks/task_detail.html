@@ -14,20 +14,20 @@
     <br>
     <p><strong>Deadline: {{ task.deadline }}</strong></p>
     <p><strong>Priority: {{ task.priority }}</strong></p>
-    <ul>
-      <li>Task type: {{ task.type }}</li>
-      <li>Created ate: {{ task.created_at }}</li>
-      {% if task.updated_at %}
-        <li>Updated ate: {{ task.updated_at }}</li>
-      {% endif %}
-      <br>Assignee:
+    <br>Task type: {{ task.task_type }}
+    <br>Created ate: {{ task.created_at }}
+    {% if task.updated_at %}
+      <br>Updated ate: {{ task.updated_at }}
+    {% endif %}
+      <div><br>
+        Assignee:
       {% for user in task.assignee.all %}
         <li>{{ user }}{% if not forloop.last %}</li> {% endif %}
       {% empty %}
         —
       {% endfor %}
-    </ul>
-    <p>{{ task.description }}</p>
+      </div>
+    <br><p>Description: {{ task.description }}</p>
 
 
   </div>
