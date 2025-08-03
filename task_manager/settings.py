@@ -131,3 +131,9 @@ AUTH_USER_MODEL = "tasks.Worker"
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+LOGIN_URL = 'login'
+
+LOGIN_REDIRECT_URL = 'index'
+
+LOGOUT_REDIRECT_URL = 'index'
