@@ -16,7 +16,7 @@ urlpatterns = [
     path(
         "tasks/",
         TaskListView.as_view(),
-        name="tasks-list",
+        name="task-list",
     ),
     path(
         "tasks/<int:pk>/",
@@ -31,12 +31,12 @@ urlpatterns = [
     path(
         "positions/",
         PositionListView.as_view(),
-        name="positions-list",
+        name="position-list",
     ),
     path(
         "workers/",
         WorkerListView.as_view(),
-        name="workers-list",
+        name="worker-list",
     ),
     path(
         "workers/<int:pk>/",

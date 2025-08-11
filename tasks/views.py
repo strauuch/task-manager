@@ -47,7 +47,7 @@ class TaskDetailView(generic.DetailView):
 class TaskCreateView(generic.CreateView):
     """View class for the task create page of the site."""
     form_class = TaskForm
-    success_url = reverse_lazy("tasks-list")
+    success_url = reverse_lazy("task-list")
     template_name = "tasks/task_form.html"
 
 class WorkerListView(generic.ListView):
