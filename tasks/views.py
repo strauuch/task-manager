@@ -31,6 +31,13 @@ class TaskTypeListView(LoginRequiredMixin, generic.ListView):
     template_name = "tasks/task_types_list.html"
     paginate_by = 10
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        q = self.request.GET.get("q")
+        if q:
+            queryset = queryset.filter(name__icontains=q)
+        return queryset
+
 
 class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
     """View class for the create task types page of the site."""
