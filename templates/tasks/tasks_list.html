@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>All Tasks</h1>
+  <h1>
+    All Tasks
+    <a href="{% url 'task-create' %}">Create</a>
+  </h1>
 
   {% if tasks %}
     <table class="table table-striped">
