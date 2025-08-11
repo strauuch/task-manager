@@ -154,6 +154,13 @@ class PositionListView(LoginRequiredMixin, generic.ListView):
     template_name = "tasks/positions_list.html"
     paginate_by = 10
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        q = self.request.GET.get("q")
+        if q:
+            queryset = queryset.filter(name__icontains=q)
+        return queryset
+
 
 class PositionCreateView(LoginRequiredMixin, generic.CreateView):
     """View class for the create positions page of the site."""
