@@ -41,3 +41,31 @@ class WorkerCreationForm(UserCreationForm):
             "position",
             "email",
         )
+
+
+class TaskTypeSearchForm(forms.Form):
+    q = forms.CharField(
+        max_length=155,
+        required=False,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search by name",
+                "class": "form-control",
+            }
+        ),
+    )
+
+
+class PositionSearchForm(forms.Form):
+    q = forms.CharField(
+        max_length=155,
+        required=False,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search by name",
+                "class": "form-control",
+            }
+        ),
+    )

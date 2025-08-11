@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 
 from tasks.filters import TaskFilter
-from tasks.forms import TaskForm, WorkerCreationForm
+from tasks.forms import TaskForm, WorkerCreationForm, TaskTypeSearchForm, PositionSearchForm
 from tasks.models import TaskType, Task, Worker, Position
 
 
@@ -33,10 +33,17 @@ class TaskTypeListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        q = self.request.GET.get("q")
-        if q:
-            queryset = queryset.filter(name__icontains=q)
+        self.form = TaskTypeSearchForm(self.request.GET)
+        if self.form.is_valid():
+            q = self.form.cleaned_data.get("q")
+            if q:
+                queryset = queryset.filter(name__icontains=q)
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_form'] = self.form
+        return context
 
 
 class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
@@ -156,10 +163,18 @@ class PositionListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        q = self.request.GET.get("q")
-        if q:
-            queryset = queryset.filter(name__icontains=q)
+        self.form = PositionSearchForm(self.request.GET)
+        if self.form.is_valid():
+            q = self.form.cleaned_data.get("q")
+            if q:
+                queryset = queryset.filter(name__icontains=q)
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_form'] = self.form
+        return context
+
 
 
 class PositionCreateView(LoginRequiredMixin, generic.CreateView):
