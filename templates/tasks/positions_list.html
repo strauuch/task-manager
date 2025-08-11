@@ -1,12 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Positions</h1>
-  <ul>
+  <h1>
+    Positions
+    <a href="{% url 'positions-create' %}">+</a>
+  </h1>
+  {% if positions %}
+    <table class="table">
+      <tr>
+        <th>ID</th>
+        <th>Position</th>
+        <th>Update</th>
+        <th>Delete</th>
+      </tr>
     {% for position in positions %}
-      <li><a href="#">{{ position.name }}</a></li>
-    {% empty %}
-      <li>No positions available.</li>
+      <tr>
+        <td>{{ position.id }}</td>
+        <td>{{ position.name }}</td>
+        <td><a href="{% url 'positions-update' pk=position.id %}">Update</a></td>
+        <td><a href="{% url 'positions-delete' pk=position.id %}">Delete</a></td>
+      </tr>
     {% endfor %}
-  </ul>
+    </table>
+  {% else %}
+    <p>No positions available.</p>
+  {% endif %}
 {% endblock %}
