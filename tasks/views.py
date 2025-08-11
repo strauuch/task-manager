@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 
+from tasks.forms import TaskForm
 from tasks.models import TaskType, Task, Worker, Position
 
 
@@ -45,9 +46,7 @@ class TaskDetailView(generic.DetailView):
 
 class TaskCreateView(generic.CreateView):
     """View class for the task create page of the site."""
-    # form_class = TaskForm
-    model = Task
-    fields = ("name", "task_type", "priority", "deadline", "description", "assignee", "status")
+    form_class = TaskForm
     success_url = reverse_lazy("tasks-list")
     template_name = "tasks/task_form.html"
 
