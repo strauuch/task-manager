@@ -29,6 +29,30 @@ class TaskTypeListView(LoginRequiredMixin, generic.ListView):
     template_name = "tasks/task_types_list.html"
     paginate_by = 10
 
+
+class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
+    """View class for the create task types page of the site."""
+
+    model = TaskType
+    fields = "__all__"
+    success_url = reverse_lazy("task-types-list")
+    template_name = "tasks/task_types_form.html"
+
+class TaskTypeUpdateView(LoginRequiredMixin, generic.UpdateView):
+    """View class for the update task types page of the site."""
+
+    model = TaskType
+    fields = "__all__"
+    success_url = reverse_lazy("task-types-list")
+    template_name = "tasks/task_types_form.html"
+
+class TaskTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
+    """View class for the delete task types page of the site."""
+
+    model = TaskType
+    success_url = reverse_lazy("task-types-list")
+    template_name = "tasks/task_types_confirm_delete.html"
+
 class TaskListView(LoginRequiredMixin, generic.ListView):
     """View class for the tasks page of the site."""
 
