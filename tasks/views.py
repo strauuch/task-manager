@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.timezone import now
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
@@ -64,12 +65,15 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         qs = Task.objects.select_related("task_type").prefetch_related("assignee")
+        if 'active_filter' not in self.request.GET:
+            qs = qs.exclude(status__in=["canceled", "completed", "blocked"])
         self.filterset = TaskFilter(self.request.GET, queryset=qs)
         return self.filterset.qs.distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["filter"] = self.filterset
+        context['today'] = now().date()
         return context
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):

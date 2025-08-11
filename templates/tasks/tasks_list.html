@@ -6,9 +6,25 @@
     <a href="{% url 'task-create' %}">+</a>
   </h1>
 
-  <form method="get" class="mb-3">
-    {{ filter.form.as_p }}
-    <button type="submit" class="btn btn-primary">Filter</button>
+  <form method="get" class="filter-form">
+    <div class="filter-search">
+      {{ filter.form.q.label_tag }} {{ filter.form.q }}
+    </div>
+
+    <div class="filter-fields">
+      {{ filter.form.active_filter.label_tag }} {{ filter.form.active_filter }}
+      <br>
+      {{ filter.form.task_type.label_tag }} {{ filter.form.task_type }}
+      {{ filter.form.assignee.label_tag }} {{ filter.form.assignee }}
+      {{ filter.form.priority.label_tag }} {{ filter.form.priority }}
+      {{ filter.form.status.label_tag }} {{ filter.form.status }}
+      {{ filter.form.deadline.label_tag }} {{ filter.form.deadline }}
+    </div>
+
+    <div class="filter-buttons">
+      <button type="submit" class="btn btn-primary">Filter</button>
+      <a href="{% url 'tasks-list' %}" class="btn btn-secondary">Reset Filters</a>
+    </div>
   </form>
 
   {% if tasks %}
