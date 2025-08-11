@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 
-from tasks.forms import TaskForm
+from tasks.forms import TaskForm, WorkerCreationForm
 from tasks.models import TaskType, Task, Worker, Position
 
 
@@ -106,6 +106,14 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
 class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
     """View class for the worker detail page of the site."""
     model = Worker
+
+
+class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
+    """View class for the worker create page of the site."""
+
+    model = Worker
+    form_class = WorkerCreationForm
+    success_url = reverse_lazy("workers-list")
 
 
 class PositionListView(LoginRequiredMixin, generic.ListView):

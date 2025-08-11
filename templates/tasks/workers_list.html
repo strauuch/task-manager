@@ -3,6 +3,7 @@
 {% block content %}
   <h1>
     Worker List
+    <a href="{% url 'worker-create' %}">New worker</a>
   </h1>
 
   {% if workers %}
