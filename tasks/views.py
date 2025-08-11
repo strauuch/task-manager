@@ -48,7 +48,7 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     """View class for the task create page of the site."""
     form_class = TaskForm
-    success_url = reverse_lazy("task-list")
+    success_url = reverse_lazy("tasks-list")
     template_name = "tasks/task_form.html"
 
 class WorkerListView(LoginRequiredMixin, generic.ListView):
