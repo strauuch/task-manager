@@ -6,46 +6,52 @@
     <a href="{% url 'task-create' %}">+</a>
   </h1>
 
+  <form method="get" class="mb-3">
+    {{ filter.form.as_p }}
+    <button type="submit" class="btn btn-primary">Filter</button>
+  </form>
+
   {% if tasks %}
     <table class="table table-striped">
       <tr>
-        <td>ID</td>
-        <td>Task Name</td>
-        <td>Priority</td>
-        <td>Status</td>
-        <td>Assignee</td>
-        <td>Task type</td>
-        <td>Deadline</td>
-        <td>Update at</td>
-        <td>Created at</td>
-        <td>Update</td>
-        <td>Delete</td>
+        <th>ID</th>
+        <th>Task Name</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Assignee</th>
+        <th>Task type</th>
+        <th>Deadline</th>
+        <th>Update at</th>
+        <th>Created at</th>
+        <th>Update</th>
+        <th>Delete</th>
       </tr>
-    {% for task in tasks %}
-      <tr>
-        <td><a href="{{ task.get_absolute_url }}">{{ task.id }}</a></td>
-        <td><a href="{{ task.get_absolute_url }}">{{ task.name }}</a></td>
-        <td>{{ task.priority }}</td>
-        <td>{{ task.status }}</td>
-        <td>
-          <ul>
+      {% for task in tasks %}
+        <tr>
+          <td><a href="{{ task.get_absolute_url }}">{{ task.id }}</a></td>
+          <td><a href="{{ task.get_absolute_url }}">{{ task.name }}</a></td>
+          <td>{{ task.priority }}</td>
+          <td>{{ task.status }}</td>
+          <td>
+            <ul>
               {% for user in task.assignee.all %}
-                <li>{{ user }}{% if not forloop.last %}</li> {% endif %}
+                <li>{{ user }}</li>
               {% empty %}
                 —
               {% endfor %}
-          </ul>
-        </td>
-        <td>{{ task.task_type }}</td>
-        <td><b>{{ task.deadline }}</b></td>
-        <td>{{ task.updated_at }}</td>
-        <td>{{ task.created_at }}</td>
-        <td><a href="{% url 'task-update' pk=task.id %}">Update</a></td>
-        <td><a href="{% url 'task-delete' pk=task.id %}">Delete</a></td>
-      </tr>
-    {% endfor %}
+            </ul>
+          </td>
+          <td>{{ task.task_type }}</td>
+          <td>{{ task.deadline }}</td>
+          <td>{{ task.updated_at }}</td>
+          <td>{{ task.created_at }}</td>
+          <td><a href="{% url 'task-update' pk=task.id %}">Update</a></td>
+          <td><a href="{% url 'task-delete' pk=task.id %}">Delete</a></td>
+        </tr>
+      {% endfor %}
     </table>
   {% else %}
     <p>No tasks available.</p>
   {% endif %}
+
 {% endblock %}

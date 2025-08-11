@@ -14,8 +14,10 @@ class TaskForm(forms.ModelForm):
     )
     class Meta:
         model = Task
-        widgets = {"deadline": forms.DateInput(attrs={"type": "datetime-local"}),}
         fields = ("name", "task_type", "priority", "deadline", "description", "assignee", "status")
+        widgets = {
+            "deadline": forms.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
+        }
         # fields = "__all__"
 
 
@@ -23,3 +25,7 @@ class WorkerCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = Worker
         fields = UserCreationForm.Meta.fields + ("first_name", "last_name", "position", "email", )
+
+
+# class TaskSearchForm(forms.Form):
+#     name = forms.CharField(max_length=255, required=False)

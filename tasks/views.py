@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 
+from tasks.filters import TaskFilter
 from tasks.forms import TaskForm, WorkerCreationForm
 from tasks.models import TaskType, Task, Worker, Position
 
@@ -62,8 +63,14 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        return Task.objects.select_related("task_type")
+        qs = Task.objects.select_related("task_type").prefetch_related("assignee")
+        self.filterset = TaskFilter(self.request.GET, queryset=qs)
+        return self.filterset.qs.distinct()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["filter"] = self.filterset
+        return context
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
     """View class for the task detail page of the site."""

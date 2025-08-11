@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     "tasks",
     "debug_toolbar",
     "crispy_forms",
-    "crispy_bootstrap4",
+        "crispy_bootstrap4",
+        "django_filters",
 ]
 
 MIDDLEWARE = [
