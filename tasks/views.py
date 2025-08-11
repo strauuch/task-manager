@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
@@ -20,7 +21,7 @@ def index(request):
     return render(request, "tasks/index.html", context=context)
 
 
-class TaskTypeListView(generic.ListView):
+class TaskTypeListView(LoginRequiredMixin, generic.ListView):
     """View class for the task types page of the site."""
 
     model = TaskType
@@ -28,7 +29,7 @@ class TaskTypeListView(generic.ListView):
     template_name = "tasks/task_types_list.html"
     paginate_by = 10
 
-class TaskListView(generic.ListView):
+class TaskListView(LoginRequiredMixin, generic.ListView):
     """View class for the tasks page of the site."""
 
     model = Task
@@ -40,17 +41,17 @@ class TaskListView(generic.ListView):
         return Task.objects.select_related("task_type")
 
 
-class TaskDetailView(generic.DetailView):
+class TaskDetailView(LoginRequiredMixin, generic.DetailView):
     """View class for the task detail page of the site."""
     model = Task
 
-class TaskCreateView(generic.CreateView):
+class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     """View class for the task create page of the site."""
     form_class = TaskForm
     success_url = reverse_lazy("task-list")
     template_name = "tasks/task_form.html"
 
-class WorkerListView(generic.ListView):
+class WorkerListView(LoginRequiredMixin, generic.ListView):
     """View class for the workers page of the site."""
 
     model = Worker
@@ -62,12 +63,12 @@ class WorkerListView(generic.ListView):
         return Worker.objects.select_related("position")
 
 
-class WorkerDetailView(generic.DetailView):
+class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
     """View class for the worker detail page of the site."""
     model = Worker
 
 
-class PositionListView(generic.ListView):
+class PositionListView(LoginRequiredMixin, generic.ListView):
     """View class for the positions page of the site."""
 
     model = Position
