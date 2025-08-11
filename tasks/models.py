@@ -29,7 +29,7 @@ class Status(models.TextChoices):
     PAUSED = "paused", "Paused"
     CANCELED = "canceled", "Canceled"
     COMPLETED = "completed", "Completed"
-    WFR = "wfr", "Waiting for Review"
+    REVIEWING = "reviewing", "Reviewing"
     BLOCKED = "blocked", "Blocked"
 
 
