@@ -22,6 +22,7 @@ class Priority(models.TextChoices):
     HIGH = "high", "High"
     CRITICAL = "critical", "Critical"
 
+
 class Status(models.TextChoices):
     PENDING = "pending", "Pending"
     IN_PROGRESS = "in_progress", "In Progress"
@@ -54,9 +55,7 @@ class Task(models.Model):
         verbose_name_plural = "Tasks"
 
     def __str__(self):
-        return (
-            f"Task {self.name}, priority: {self.priority}, deadline: {self.deadline}"
-        )
+        return f"Task {self.name}, priority: {self.priority}, deadline: {self.deadline}"
 
     def get_absolute_url(self):
         return reverse("task-detail", kwargs={"pk": self.pk})

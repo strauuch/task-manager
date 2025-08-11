@@ -12,11 +12,22 @@ class TaskForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         required=False,
     )
+
     class Meta:
         model = Task
-        fields = ("name", "task_type", "priority", "deadline", "description", "assignee", "status")
+        fields = (
+            "name",
+            "task_type",
+            "priority",
+            "deadline",
+            "description",
+            "assignee",
+            "status",
+        )
         widgets = {
-            "deadline": forms.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
+            "deadline": forms.DateTimeInput(
+                attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
+            ),
         }
         # fields = "__all__"
 
@@ -24,8 +35,9 @@ class TaskForm(forms.ModelForm):
 class WorkerCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = Worker
-        fields = UserCreationForm.Meta.fields + ("first_name", "last_name", "position", "email", )
-
-
-# class TaskSearchForm(forms.Form):
-#     name = forms.CharField(max_length=255, required=False)
+        fields = UserCreationForm.Meta.fields + (
+            "first_name",
+            "last_name",
+            "position",
+            "email",
+        )

@@ -40,6 +40,7 @@ class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("task-types-list")
     template_name = "tasks/task_types_form.html"
 
+
 class TaskTypeUpdateView(LoginRequiredMixin, generic.UpdateView):
     """View class for the update task types page of the site."""
 
@@ -48,12 +49,14 @@ class TaskTypeUpdateView(LoginRequiredMixin, generic.UpdateView):
     success_url = reverse_lazy("task-types-list")
     template_name = "tasks/task_types_form.html"
 
+
 class TaskTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
     """View class for the delete task types page of the site."""
 
     model = TaskType
     success_url = reverse_lazy("task-types-list")
     template_name = "tasks/task_types_confirm_delete.html"
+
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
     """View class for the tasks page of the site."""
@@ -65,7 +68,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         qs = Task.objects.select_related("task_type").prefetch_related("assignee")
-        if 'active_filter' not in self.request.GET:
+        if "active_filter" not in self.request.GET:
             qs = qs.exclude(status__in=["canceled", "completed", "blocked"])
         self.filterset = TaskFilter(self.request.GET, queryset=qs)
         return self.filterset.qs.distinct()
@@ -73,19 +76,24 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["filter"] = self.filterset
-        context['today'] = now().date()
+        context["today"] = now().date()
         return context
+
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
     """View class for the task detail page of the site."""
+
     model = Task
+
 
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     """View class for the task create page of the site."""
+
     model = Task
     form_class = TaskForm
     success_url = reverse_lazy("tasks-list")
     template_name = "tasks/task_form.html"
+
 
 class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
     """View class for the task update page of the site."""
@@ -104,6 +112,7 @@ class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("tasks-list")
     template_name = "tasks/task_confirm_delete.html"
 
+
 class WorkerListView(LoginRequiredMixin, generic.ListView):
     """View class for the workers page of the site."""
 
@@ -118,6 +127,7 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
 
 class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
     """View class for the worker detail page of the site."""
+
     model = Worker
 
 
@@ -146,6 +156,7 @@ class PositionCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("positions-list")
     template_name = "tasks/positions_form.html"
 
+
 class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
     """View class for the update positions page of the site."""
 
@@ -153,6 +164,7 @@ class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
     fields = "__all__"
     success_url = reverse_lazy("positions-list")
     template_name = "tasks/positions_form.html"
+
 
 class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
     """View class for the delete positions page of the site."""

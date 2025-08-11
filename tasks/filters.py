@@ -2,6 +2,7 @@ import django_filters
 from django.db.models import Q
 from tasks.models import Task, TaskType, Worker
 
+
 class TaskFilter(django_filters.FilterSet):
     STATUS_ACTIVE = "active"
     STATUS_ALL = "all"
@@ -12,16 +13,26 @@ class TaskFilter(django_filters.FilterSet):
         (STATUS_OFF, "Inactive only"),
     ]
 
-    q = django_filters.CharFilter(method='filter_search', label='Search')
-    task_type = django_filters.ModelChoiceFilter(queryset=TaskType.objects.all(), label='Type')
-    assignee = django_filters.ModelChoiceFilter(queryset=Worker.objects.all(), label='Assignee')
-    priority = django_filters.ChoiceFilter(choices=Task._meta.get_field('priority').choices)
-    status = django_filters.ChoiceFilter(choices=Task._meta.get_field('status').choices)
+    q = django_filters.CharFilter(method="filter_search", label="Search")
+    task_type = django_filters.ModelChoiceFilter(
+        queryset=TaskType.objects.all(), label="Type"
+    )
+    assignee = django_filters.ModelChoiceFilter(
+        queryset=Worker.objects.all(), label="Assignee"
+    )
+    priority = django_filters.ChoiceFilter(
+        choices=Task._meta.get_field("priority").choices
+    )
+    status = django_filters.ChoiceFilter(choices=Task._meta.get_field("status").choices)
     deadline = django_filters.DateFromToRangeFilter(
-        widget=django_filters.widgets.RangeWidget(attrs={'type': 'date'})
+        widget=django_filters.widgets.RangeWidget(attrs={"type": "date"})
     )
     active_filter = django_filters.ChoiceFilter(
-        choices=STATUS_CHOICES, method="filter_active", empty_label=None, label="Show", initial=STATUS_ACTIVE,
+        choices=STATUS_CHOICES,
+        method="filter_active",
+        empty_label=None,
+        label="Show",
+        initial=STATUS_ACTIVE,
     )
 
     class Meta:
@@ -30,9 +41,9 @@ class TaskFilter(django_filters.FilterSet):
 
     def filter_search(self, queryset, name, value):
         return queryset.filter(
-            Q(name__icontains=value) |
-            Q(description__icontains=value) |
-            Q(task_type__name__icontains=value)
+            Q(name__icontains=value)
+            | Q(description__icontains=value)
+            | Q(task_type__name__icontains=value)
         ).distinct()
 
     def filter_active(self, queryset, name, value):
