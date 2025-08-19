@@ -5,7 +5,12 @@ from django.urls import reverse_lazy
 from django.views import generic
 
 from tasks.filters import TaskFilter
-from tasks.forms import TaskForm, WorkerCreationForm, TaskTypeSearchForm, PositionSearchForm
+from tasks.forms import (
+    TaskForm,
+    WorkerCreationForm,
+    TaskTypeSearchForm,
+    PositionSearchForm,
+)
 from tasks.models import TaskType, Task, Worker, Position
 
 
@@ -42,7 +47,7 @@ class TaskTypeListView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['search_form'] = self.form
+        context["search_form"] = self.form
         return context
 
 
@@ -172,9 +177,8 @@ class PositionListView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['search_form'] = self.form
+        context["search_form"] = self.form
         return context
-
 
 
 class PositionCreateView(LoginRequiredMixin, generic.CreateView):
