@@ -12,7 +12,7 @@ from tasks.forms import (
     PositionSearchForm,
     CommentForm,
 )
-from tasks.models import TaskType, Task, Worker, Position
+from tasks.models import TaskType, Task, Worker, Position, Comment
 
 
 def index(request):
@@ -226,3 +226,25 @@ class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Position
     success_url = reverse_lazy("positions-list")
     template_name = "tasks/positions_confirm_delete.html"
+
+
+class CommentUpdateView(LoginRequiredMixin, generic.UpdateView):
+    """View class for the update comment page of the site."""
+
+    model = Comment
+    form_class = CommentForm
+    success_url = reverse_lazy("tasks-list")
+    template_name = "tasks/comments_form.html"
+
+    def get_success_url(self):
+        return self.object.task.get_absolute_url()
+
+
+class CommentDeleteView(LoginRequiredMixin, generic.DeleteView):
+    """View class for the delete comment page of the site."""
+
+    model = Comment
+    template_name = "tasks/comments_confirm_delete.html"
+
+    def get_success_url(self):
+        return self.object.task.get_absolute_url()

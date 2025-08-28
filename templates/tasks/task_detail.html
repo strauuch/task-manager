@@ -67,6 +67,11 @@
               <div class="comment-body mt-1">
                 {{ comment.content|linebreaksbr }}
               </div>
+              {# Buttons Edit/Delete #}
+              <div class="comment-actions mt-1">
+                <a href="{% url 'comment-update' pk=comment.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                <a href="{% url 'comment-delete' pk=comment.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+              </div>
             </div>
           </li>
         {% empty %}

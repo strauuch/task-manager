@@ -1,24 +1,6 @@
 from django.urls import path
 
-from tasks.views import (
-    index,
-    TaskTypeListView,
-    TaskListView,
-    WorkerListView,
-    PositionListView,
-    TaskDetailView,
-    WorkerDetailView,
-    TaskCreateView,
-    TaskTypeCreateView,
-    TaskTypeUpdateView,
-    TaskTypeDeleteView,
-    PositionCreateView,
-    PositionUpdateView,
-    PositionDeleteView,
-    TaskDeleteView,
-    TaskUpdateView,
-    WorkerCreateView,
-)
+from tasks.views import (index, TaskTypeListView, TaskListView, WorkerListView, PositionListView, TaskDetailView, WorkerDetailView, TaskCreateView, TaskTypeCreateView, TaskTypeUpdateView, TaskTypeDeleteView, PositionCreateView, PositionUpdateView, PositionDeleteView, TaskDeleteView, TaskUpdateView, WorkerCreateView, CommentUpdateView, CommentDeleteView, )
 
 urlpatterns = [
     path(
@@ -105,5 +87,15 @@ urlpatterns = [
         "workers/<int:pk>/",
         WorkerDetailView.as_view(),
         name="worker-detail",
+    ),
+    path(
+        "comments/<int:pk>/update/",
+        CommentUpdateView.as_view(),
+        name="comment-update",
+    ),
+    path(
+        "comments/<int:pk>/delete/",
+        CommentDeleteView.as_view(),
+        name="comment-delete",
     ),
 ]
