@@ -126,6 +126,7 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
         context = self.get_context_data()
         return self.render_to_response(context)
 
+
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     """View class for the task create page of the site."""
 
