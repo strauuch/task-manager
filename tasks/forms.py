@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from tasks.models import Task, Worker
+from tasks.models import Task, Worker, Comment
 
 
 class TaskForm(forms.ModelForm):
@@ -69,3 +69,14 @@ class PositionSearchForm(forms.Form):
             }
         ),
     )
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["content"]
+        widgets = {
+            "content": forms.Textarea(attrs={
+                "rows": 3,
+                "placeholder": "Write your comment here..."
+            })
+        }

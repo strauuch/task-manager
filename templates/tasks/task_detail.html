@@ -47,5 +47,53 @@
       <p>{{ task.description }}</p>
     </div>
 
+  {# ====== Comments block ====== #}
+    <div class="task-comments">
+      <h3>Comments ({{ comments|length }})</h3>
+
+      {# List comments #}
+      <ul class="comment-list list-unstyled">
+        {% for comment in comments %}
+          <li id="comment-{{ comment.id }}" class="media mb-3">
+            <div class="media-body">
+              <div class="comment-meta">
+                <a href="{{ comment.author.get_absolute_url }}">{{ comment.author }}</a>
+                <small class="text-muted"> — {{ comment.created_at|time:"H:i" }} {{ comment.created_at|date:"d.m" }}</small>
+                {% if comment.updated_at and comment.updated_at > comment.created_at %}
+                  <small class="text-muted"> (edited)</small>
+                {% endif %}
+              </div>
+
+              <div class="comment-body mt-1">
+                {{ comment.content|linebreaksbr }}
+              </div>
+            </div>
+          </li>
+        {% empty %}
+          <li>No comments yet.</li>
+        {% endfor %}
+      </ul>
+
+      {# Form comments #}
+      {% if user.is_authenticated %}
+        <form method="post" class="comment-form mb-3">
+          {% csrf_token %}
+
+          <div class="form-group">
+            {{ comment_form.content }}
+            {% if comment_form.content.errors %}
+              <div class="text-danger">{{ comment_form.content.errors }}</div>
+            {% endif %}
+          </div>
+
+          <button type="submit" class="btn btn-primary">Add comment</button>
+        </form>
+      {% else %}
+        <p><a href="{% url 'login' %}?next={{ request.path }}">Login</a> to add comments.</p>
+      {% endif %}
+
+    </div>
+  {# ====== /Comments block ====== #}
+
   </div>
 {% endblock %}

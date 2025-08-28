@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.timezone import now
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -10,6 +10,7 @@ from tasks.forms import (
     WorkerCreationForm,
     TaskTypeSearchForm,
     PositionSearchForm,
+    CommentForm,
 )
 from tasks.models import TaskType, Task, Worker, Position
 
@@ -103,7 +104,27 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
     """View class for the task detail page of the site."""
 
     model = Task
+    template_name = "tasks/task_detail.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        task = self.get_object()
+        context["comments"] = task.comments.all()
+        if "comment_form" not in context:
+            context["comment_form"] = CommentForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        task = self.get_object()
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.task = task
+            comment.author = request.user
+            comment.save()
+            return redirect("task-detail", pk=task.pk)
+        context = self.get_context_data()
+        return self.render_to_response(context)
 
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     """View class for the task create page of the site."""
