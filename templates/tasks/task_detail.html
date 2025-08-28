@@ -8,7 +8,7 @@
         {{ task.name }}
         <span class="status-indicator {% if task.is_complete %}complete{% else %}in-progress{% endif %}"></span>
         <a href="{% url 'task-update' pk=task.id %}">Update</a>
-        <a href="{% url 'task-delete' pk=task.id %}">Delete</a>
+        <a href="{% url 'task-delete' pk=task.id %}?next={{ task.get_absolute_url }}">Delete</a>
       </h1>
       <h4>
         ID: {{ task.id }}

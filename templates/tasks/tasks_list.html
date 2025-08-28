@@ -62,7 +62,7 @@
           <td>{{ task.updated_at }}</td>
           <td>{{ task.created_at }}</td>
           <td><a href="{% url 'task-update' pk=task.id %}">Update</a></td>
-          <td><a href="{% url 'task-delete' pk=task.id %}">Delete</a></td>
+          <td><a href="{% url 'task-delete' pk=task.id %}?next={% url 'tasks-list' %}">Delete</a></td>
         </tr>
       {% endfor %}
     </table>
