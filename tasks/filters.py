@@ -1,6 +1,6 @@
 import django_filters
 from django.db.models import Q
-from django.utils.timezone import localdate
+from django.utils.timezone import localdate, timedelta
 from tasks.models import Task, TaskType, Worker
 
 
@@ -14,20 +14,33 @@ class TaskFilter(django_filters.FilterSet):
         (STATUS_OFF, "Inactive only"),
     ]
 
+    DEADLINE_TODAY = "today"
+    DEADLINE_OVERDUE = "overdue"
+    DEADLINE_TOMORROW = "tomorrow"
+    DEADLINE_THIS_WEEK = "this_week"
+    DEADLINE_NEXT_WEEK = "next_week"
+    DEADLINE_ALL = "all"
+
+    DEADLINE_CHOICES = [
+        (DEADLINE_TODAY, "Today"),
+        (DEADLINE_OVERDUE, "Overdue"),
+        (DEADLINE_TOMORROW, "Tomorrow"),
+        (DEADLINE_THIS_WEEK, "This week"),
+        (DEADLINE_NEXT_WEEK, "Next week"),
+        (DEADLINE_ALL, "All time"),
+    ]
+
     q = django_filters.CharFilter(method="filter_search", label="Search")
     task_type = django_filters.ModelChoiceFilter(
-        queryset=TaskType.objects.all(), label="Type"
+        queryset=TaskType.objects.all(), label="Type", empty_label="—",
     )
     assignee = django_filters.ModelChoiceFilter(
-        queryset=Worker.objects.all(), label="Assignee"
+        queryset=Worker.objects.all(), label="Assignee", empty_label="—",
     )
     priority = django_filters.ChoiceFilter(
-        choices=Task._meta.get_field("priority").choices
+        choices=Task._meta.get_field("priority").choices, empty_label="—",
     )
-    status = django_filters.ChoiceFilter(choices=Task._meta.get_field("status").choices)
-    deadline = django_filters.DateFromToRangeFilter(
-        widget=django_filters.widgets.RangeWidget(attrs={"type": "date"})
-    )
+    status = django_filters.ChoiceFilter(choices=Task._meta.get_field("status").choices, empty_label="—",)
     active_filter = django_filters.ChoiceFilter(
         choices=STATUS_CHOICES,
         method="filter_active",
@@ -35,35 +48,18 @@ class TaskFilter(django_filters.FilterSet):
         label="Show",
         initial=STATUS_ACTIVE,
     )
+    deadline_filter = django_filters.ChoiceFilter(
+        choices=DEADLINE_CHOICES,
+        method="filter_deadline",
+        label="Deadline",
+        empty_label="—",
+        required=False,
+        initial=None,
+    )
 
     class Meta:
         model = Task
-        fields = ["task_type", "assignee", "priority", "status", "active_filter"]
-
-    def __init__(self, data=None, *args, **kwargs):
-        super().__init__(data=data, *args, **kwargs)
-        deadline_keys = {
-            "deadline_min",
-            "deadline_max",
-            "deadline_after",
-            "deadline_before",
-            "deadline_0",
-            "deadline_1",
-        }
-        has_deadline_in_request = (
-            any((data.get(k) for k in deadline_keys)) if data else False
-        )
-        if not has_deadline_in_request:
-            today = localdate()
-            form = getattr(self, "form", None)
-            if form and "deadline" in form.fields:
-                form.fields["deadline"].initial = (today, None)
-                try:
-                    form.fields["deadline"].widget.widgets[0].attrs[
-                        "value"
-                    ] = today.isoformat()
-                except Exception:
-                    pass
+        fields = ["task_type", "assignee", "priority", "status", "active_filter", "deadline_filter"]
 
     def filter_search(self, queryset, name, value):
         return queryset.filter(
@@ -73,8 +69,29 @@ class TaskFilter(django_filters.FilterSet):
         ).distinct()
 
     def filter_active(self, queryset, name, value):
-        if value == self.STATUS_ACTIVE:
+        if not value or value == self.STATUS_ACTIVE:
             return queryset.exclude(status__in=["canceled", "completed", "blocked"])
         if value == self.STATUS_OFF:
             return queryset.filter(status__in=["canceled", "completed", "blocked"])
+        if value == self.STATUS_ALL:
+            return Task.objects.all()
+        return queryset
+
+    def filter_deadline(self, queryset, name, value):
+        today = localdate()
+
+        if value == self.DEADLINE_TODAY:
+            return queryset.filter(deadline__date=today)
+        if value == self.DEADLINE_OVERDUE:
+            return queryset.filter(deadline__date__lt=today)
+        if value == self.DEADLINE_TOMORROW:
+            return queryset.filter(deadline__date=today + timedelta(days=1))
+        if value == self.DEADLINE_THIS_WEEK:
+            start = today
+            end = today + timedelta(days=6 - today.weekday())
+            return queryset.filter(deadline__date__range=(start, end))
+        if value == self.DEADLINE_NEXT_WEEK:
+            start = today + timedelta(days=7 - today.weekday())
+            end = start + timedelta(days=6)
+            return queryset.filter(deadline__date__range=(start, end))
         return queryset

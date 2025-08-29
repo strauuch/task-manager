@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 
 from tasks.models import Task, Worker, Comment
 
@@ -29,7 +28,6 @@ class TaskForm(forms.ModelForm):
                 attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
             ),
         }
-        # fields = "__all__"
 
 
 class WorkerCreationForm(UserCreationForm):
