@@ -163,7 +163,7 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        return Worker.objects.select_related("position").prefetch_related("assigned_tasks")
+        return Worker.objects.select_related("position")
 
 
 class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
