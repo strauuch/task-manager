@@ -20,9 +20,11 @@ def index(request):
 
     num_tasks = Task.objects.count()
     num_workers = Worker.objects.count()
+    num_active_tasks = Task.objects.filter(status__in=["pending", "in_progress", "paused", "reviewing"]).count()
 
     context = {
         "num_tasks": num_tasks,
+        "num_active_tasks": num_active_tasks,
         "num_workers": num_workers,
     }
 
