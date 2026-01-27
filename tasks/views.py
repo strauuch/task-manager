@@ -15,6 +15,25 @@ from tasks.forms import (
 from tasks.models import TaskType, Task, Worker, Position, Comment
 
 
+class SearchListViewMixin:
+    search_form_class = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.form = self.search_form_class(self.request.GET)
+
+        if self.form.is_valid():
+            q = self.form.cleaned_data.get("q")
+            if q:
+                # Фильтруем по полю name (оно есть и у TaskType, и у Position)
+                return queryset.filter(name__icontains=q)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_form"] = self.form
+        return context
+
 def index(request):
     """View function for the home page of the site."""
 
@@ -31,27 +50,14 @@ def index(request):
     return render(request, "tasks/index.html", context=context)
 
 
-class TaskTypeListView(LoginRequiredMixin, generic.ListView):
+class TaskTypeListView(LoginRequiredMixin, SearchListViewMixin, generic.ListView):
     """View class for the task types page of the site."""
 
     model = TaskType
     context_object_name = "task_types"
     template_name = "tasks/task_types_list.html"
     paginate_by = 10
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        self.form = TaskTypeSearchForm(self.request.GET)
-        if self.form.is_valid():
-            q = self.form.cleaned_data.get("q")
-            if q:
-                queryset = queryset.filter(name__icontains=q)
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["search_form"] = self.form
-        return context
+    search_form_class = TaskTypeSearchForm
 
 
 class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
@@ -111,7 +117,7 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         task = self.get_object()
-        context["comments"] = task.comments.all()
+        context["comments"] = task.comments.select_related("author")
         if "comment_form" not in context:
             context["comment_form"] = CommentForm()
         return context
@@ -182,27 +188,14 @@ class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("workers-list")
 
 
-class PositionListView(LoginRequiredMixin, generic.ListView):
+class PositionListView(LoginRequiredMixin, SearchListViewMixin, generic.ListView):
     """View class for the positions page of the site."""
 
     model = Position
     context_object_name = "positions"
     template_name = "tasks/positions_list.html"
     paginate_by = 10
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        self.form = PositionSearchForm(self.request.GET)
-        if self.form.is_valid():
-            q = self.form.cleaned_data.get("q")
-            if q:
-                queryset = queryset.filter(name__icontains=q)
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["search_form"] = self.form
-        return context
+    search_form_class = PositionSearchForm
 
 
 class PositionCreateView(LoginRequiredMixin, generic.CreateView):
