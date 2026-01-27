@@ -1,7 +1,7 @@
 from django.urls import path
 
 from tasks.views import (
-    index,
+    IndexView,
     TaskTypeListView,
     TaskListView,
     WorkerListView,
@@ -25,7 +25,7 @@ from tasks.views import (
 urlpatterns = [
     path(
         "",
-        index,
+        IndexView.as_view(),
         name="index",
     ),
     path(

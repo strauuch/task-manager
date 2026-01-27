@@ -3,6 +3,7 @@ from django.utils.timezone import now
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
+from django.views.generic import TemplateView
 
 from tasks.filters import TaskFilter
 from tasks.forms import (
@@ -34,20 +35,24 @@ class SearchListViewMixin:
         context["search_form"] = self.form
         return context
 
-def index(request):
-    """View function for the home page of the site."""
+class IndexView(TemplateView):
+    template_name = "tasks/index.html"
 
-    num_tasks = Task.objects.count()
-    num_workers = Worker.objects.count()
-    num_active_tasks = Task.objects.filter(status__in=["pending", "in_progress", "paused", "reviewing"]).count()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-    context = {
-        "num_tasks": num_tasks,
-        "num_active_tasks": num_active_tasks,
-        "num_workers": num_workers,
-    }
+        context["num_tasks"] = Task.objects.count()
+        context["num_workers"] = Worker.objects.count()
+        context["num_active_tasks"] = Task.objects.filter(
+            status__in=[
+                "pending",
+                "in_progress",
+                "paused",
+                "reviewing",
+            ]
+        ).count()
 
-    return render(request, "tasks/index.html", context=context)
+        return context
 
 
 class TaskTypeListView(LoginRequiredMixin, SearchListViewMixin, generic.ListView):
