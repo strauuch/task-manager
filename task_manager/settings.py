@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "tasks",
     "debug_toolbar",
     "crispy_forms",
-    "crispy_bootstrap4",
+    "crispy_bootstrap5",
     "django_filters",
 ]
 
@@ -141,4 +141,6 @@ LOGIN_REDIRECT_URL = "index"
 
 LOGOUT_REDIRECT_URL = "index"
 
-CRISPY_TEMPLATE_PACK = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

@@ -1,22 +1,39 @@
-<ul class="sidebar-nav list-group">
+<nav class="d-flex flex-column h-100 p-3">
+  <h5 class="mb-4">Task Manager</h5>
+
+  <ul class="nav nav-pills flex-column gap-1 mb-auto">
+    <li class="nav-item">
+      <a href="{% url 'index' %}" class="nav-link">Home</a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'tasks-list' %}" class="nav-link">Tasks</a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'workers-list' %}" class="nav-link">Workers</a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'positions-list' %}" class="nav-link">Positions</a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'task-types-list' %}" class="nav-link">Task types</a>
+    </li>
+  </ul>
+
+  <hr>
+
   {% if user.is_authenticated %}
-    <li class="list-group-item"><a href="{{ user.get_absolute_url }}">
-      Username: {{ user.username }}</a>
-    </li>
-    <li class="list-group-item">
-      <form method="post" action="{% url 'logout' %}" style="display: inline;">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-link p-0 m-0 align-baseline">Logout</button>
-      </form>
-    </li>>
+    <div class="mb-2 small text-muted">
+      {{ user.username }}
+    </div>
+    <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-outline-secondary btn-sm w-100">
+        Logout
+      </button>
+    </form>
   {% else %}
-    <li class="list-group-item">
-      <a href="{% url 'login' %}?next={{request.path}}">Login</a>
-    </li>
+    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm w-100">
+      Login
+    </a>
   {% endif %}
-  <li class="list-group-item"><a href="{% url 'index' %}">Home</a></li>
-  <li class="list-group-item"><a href="{% url 'tasks-list' %}">Tasks</a></li>
-  <li class="list-group-item"><a href="{% url 'workers-list' %}">Workers</a></li>
-  <li class="list-group-item"><a href="{% url 'positions-list' %}">Positions</a></li>
-  <li class="list-group-item"><a href="{% url 'task-types-list' %}">Types of tasks</a></li>
-</ul>
+</nav>
