@@ -35,7 +35,7 @@ class SearchListViewMixin:
         context["search_form"] = self.form
         return context
 
-class IndexView(TemplateView):
+class IndexView(LoginRequiredMixin, TemplateView):
     template_name = "tasks/index.html"
 
     def get_context_data(self, **kwargs):
