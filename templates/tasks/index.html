@@ -1,14 +1,66 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Task Manager Home</h1>
-  <p>Welcome to easier task manager</p>
-  <h2>Fast tasks</h2>
-  <p>Now you have:</p>
-  <ul>
-    <li><strong>All tasks:</strong> {{ num_tasks }}</li>
-    <li><strong>Active tasks:</strong> {{ num_active_tasks }}</li>
-    <li><strong>Workers:</strong> {{ num_workers }}</li>
-  </ul>
+<div class="container my-4">
 
+  <h1 class="mb-4 text-light">
+    Welcome, {{ user.first_name|default:user.username }}
+  </h1>
+
+  <div class="card bg-dark text-light">
+    <div class="card-header">
+      <h3 class="mb-0">Active tasks</h3>
+    </div>
+
+    <div class="card-body">
+      {% if active_tasks %}
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle">
+            <thead class="table-light text-dark">
+              <tr>
+                <th>Name</th>
+                <th>Assignees</th>
+                <th>Created</th>
+                <th>Time left</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for task in active_tasks %}
+                <tr>
+                  <td>
+                    <a href="{{ task.get_absolute_url }}" class="text-light fw-bold">
+                      {{ task.name }}
+                    </a>
+                  </td>
+                  <td>
+                    {% for user in task.assignee.all %}
+                      <span class="badge bg-secondary me-1">{{ user.username }}</span>
+                    {% empty %}
+                      —
+                    {% endfor %}
+                  </td>
+                  <td>
+                    {{ task.created_at|date:"d.m.Y H:i" }}
+                  </td>
+                  <td>
+                    {% if task.time_left %}
+                      {{ task.time_left }}
+                    {% else %}
+                      <span class="text-danger">expired</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="mb-0 text-muted">
+          You have no active tasks 🎉
+        </p>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
 {% endblock %}

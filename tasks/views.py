@@ -1,6 +1,8 @@
+from datetime import timezone
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.timezone import now
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic import TemplateView
@@ -41,17 +43,48 @@ class IndexView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["num_tasks"] = Task.objects.count()
-        context["num_workers"] = Worker.objects.count()
-        context["num_active_tasks"] = Task.objects.filter(
-            status__in=[
+        active_statuses = [
                 "pending",
                 "in_progress",
                 "paused",
                 "reviewing",
             ]
-        ).count()
 
+        tasks = (
+            Task.objects
+            .filter(status__in=active_statuses, assignee=self.request.user)
+            .select_related("task_type")
+            .prefetch_related("assignee")
+            .order_by("deadline")
+        )
+
+        for task in tasks:
+            if not task.deadline:
+                task.time_left = None
+                continue
+
+            delta = task.deadline - now()
+
+            if delta.total_seconds() <= 0:
+                task.time_left = None
+                continue
+
+            days = delta.days
+            hours, remainder = divmod(delta.seconds, 3600)
+            minutes, _ = divmod(remainder, 60)
+
+            parts = []
+            if days:
+                parts.append(f"{days}d")
+            if hours:
+                parts.append(f"{hours}h")
+            if minutes:
+                parts.append(f"{minutes}m")
+
+            task.time_left = " ".join(parts)
+
+
+        context["active_tasks"] = tasks
         return context
 
 
