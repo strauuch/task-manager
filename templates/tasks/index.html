@@ -1,51 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="mb-4">
-  Welcome, {{ user.first_name|default:user.username }}
-</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0 text-primary">
+    Active tasks
+  </h1>
+  <a href="{% url 'task-create' %}" class="btn btn-primary btn-sm shadow-sm">+ New Task</a>
+</div>
 
-<div class="card">
-  <div class="card-header">
-    <h3 class="mb-0">Active tasks</h3>
-  </div>
 
-  <div class="card-body">
-    {% if active_tasks %}
+<div class="card border-0 border-top border-3 border-primary shadow-sm">
+
+  <div class="card-body p-0"> {% if active_tasks %}
       <div class="table-responsive">
-        <table class="table table-hover align-middle">
-          <thead class="table-light text-dark">
-            <tr>
-              <th>Name</th>
-              <th>Assignees</th>
-              <th>Created</th>
-              <th>Time left</th>
+        <table class="table table-hover align-middle mb-0">
+          <thead class="bg-light">
+            <tr class="small text-uppercase text-muted">
+              <th class="ps-4 border-0 ">Name</th>
+              <th class="border-0">Assignees</th>
+              <th class="border-0">Created</th>
+              <th class="pe-4 border-0 text-end">Time left</th>
             </tr>
           </thead>
           <tbody>
             {% for task in active_tasks %}
-              <tr>
-                <td>
-                  <a href="{{ task.get_absolute_url }}" class="fw-bold">
+              <tr class="position-relative">
+                <td class="ps-4 py-3">
+                  <a href="{{ task.get_absolute_url }}" class="link-dark fw-medium text-decoration-none stretched-link">
                     {{ task.name }}
                   </a>
                 </td>
                 <td>
                   {% for user in task.assignee.all %}
-                    <span class="badge bg-secondary me-1">{{ user.username }}</span>
+                    <span class="badge rounded-pill bg-body-secondary text-dark border me-1 position-relative" style="z-index: 2;">
+                        {{ user.username }}
+                    </span>
                   {% empty %}
-                    —
+                    <span class="text-muted">—</span>
                   {% endfor %}
                 </td>
-                <td>
-                  {{ task.created_at|date:"d.m.Y H:i" }}
+                <td class="text-muted small">
+                  {{ task.created_at|date:"d M, H:i" }}
                 </td>
-                <td>
-                  {% if task.time_left %}
-                    {{ task.time_left }}
-                  {% else %}
-                    <span class="text-danger">expired</span>
-                  {% endif %}
+                <td class="pe-4 text-end">
+                  <span class="badge {% if task.time_left %}bg-primary-subtle text-primary-emphasis{% else %}bg-danger-subtle text-danger{% endif %} border position-relative" style="z-index: 2;">
+                    {{ task.time_left|default:"expired" }}
+                  </span>
                 </td>
               </tr>
             {% endfor %}
@@ -53,9 +53,9 @@
         </table>
       </div>
     {% else %}
-      <p class="mb-0 text-muted">
-        You have no active tasks 🎉
-      </p>
+      <div class="p-5 text-center">
+        <p class="mb-0 text-muted">You have no active tasks 🎉</p>
+      </div>
     {% endif %}
   </div>
 </div>
