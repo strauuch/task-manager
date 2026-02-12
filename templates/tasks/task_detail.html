@@ -1,92 +1,139 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container my-3 text-light">
-
-  <div class="card bg-dark mb-3">
-    <div class="card-body">
-      <h2 class="card-title d-flex justify-content-between align-items-center">
-        {{ task.name }}
-        <span>
-          <span class="badge {% if task.is_complete %}bg-success{% else %}bg-warning{% endif %}">
-            {{ task.get_status_display }}
-          </span>
-          <a href="{% url 'task-update' pk=task.id %}" class="btn btn-sm btn-outline-primary ms-2">Update</a>
-          <a href="{% url 'task-delete' pk=task.id %}?next={{ task.get_absolute_url }}" class="btn btn-sm btn-outline-danger ms-1">Delete</a>
-        </span>
-      </h2>
-      <p class="card-subtitle mb-2 text-muted">ID: {{ task.id }}</p>
-
-      <ul class="list-unstyled mb-0">
-        <li><strong>Deadline:</strong> {{ task.deadline|time:"H:i" }} {{ task.deadline|date:"d.m" }}</li>
-        <li><strong>Priority:</strong> <span class="badge bg-info">{{ task.get_priority_display }}</span></li>
-        <li><strong>Task Type:</strong> {{ task.task_type }}</li>
-        <li><strong>Created at:</strong> {{ task.created_at|time:"H:i" }} {{ task.created_at|date:"d.m" }}</li>
-        {% if task.updated_at %}
-        <li><strong>Updated at:</strong> {{ task.updated_at|time:"H:i" }} {{ task.updated_at|date:"d.m" }}</li>
-        {% endif %}
-      </ul>
-    </div>
+<div class="d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-1">
+        <li class="breadcrumb-item"><a href="{% url 'tasks-list' %}" class="small">Tasks</a></li>
+        <li class="breadcrumb-item active small" aria-current="page">#{{ task.id }}</li>
+      </ol>
+    </nav>
+    <h1 class="h3 fw-bold mb-0">{{ task.name }}</h1>
   </div>
 
-  <div class="card bg-dark mb-3">
-    <div class="card-body">
-      <h4>Assignees</h4>
-      <ul>
-        {% for user in task.assignee.all %}
-          <li>{{ user }}</li>
-        {% empty %}
-          <li>—</li>
-        {% endfor %}
-      </ul>
-    </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'task-update' pk=task.id %}" class="btn btn-outline-primary btn-sm">
+      <i class="bi bi-pencil"></i> Update
+    </a>
+    <a href="{% url 'task-delete' pk=task.id %}?next={% url 'tasks-list' %}" class="btn btn-outline-danger btn-sm">
+      <i class="bi bi-trash"></i> Delete
+    </a>
   </div>
+</div>
 
-  <div class="card bg-dark mb-3">
-    <div class="card-body">
-      <h4>Description</h4>
-      <p>{{ task.description }}</p>
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="mb-5">
+      <h5 class="fw-semibold mb-3">Description</h5>
+      <div class="p-3 bg-body-tertiary rounded-3 border shadow-sm">
+        {{ task.description|default:"No description provided."|linebreaks }}
+      </div>
     </div>
-  </div>
 
-  <div class="card bg-dark">
-    <div class="card-body">
-      <h4>Comments ({{ comments|length }})</h4>
+    <div class="comments-section">
+      <h5 class="fw-semibold mb-3">Comments ({{ comments|length }})</h5>
 
-      {% for comment in comments %}
-        <div class="card bg-secondary mb-2">
-          <div class="card-body p-2">
-            <div class="d-flex justify-content-between align-items-center">
-              <small><a href="{{ comment.author.get_absolute_url }}" class="text-light">{{ comment.author }}</a> — {{ comment.created_at|time:"H:i" }} {{ comment.created_at|date:"d.m" }} {% if comment.updated_at and comment.updated_at > comment.created_at %}(edited){% endif %}</small>
-              <span>
-                <a href="{% url 'comment-update' pk=comment.id %}" class="btn btn-sm btn-outline-light">Edit</a>
-                <a href="{% url 'comment-delete' pk=comment.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
-              </span>
+      <div class="d-flex flex-column gap-3 mb-4">
+        {% for comment in comments %}
+          <div class="p-3 border rounded-3 bg-white shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <span class="fw-bold text-primary small">@{{ comment.author.username }}</span>
+                <span class="text-muted small ms-2">{{ comment.created_at|date:"d M, H:i" }}</span>
+                {% if comment.updated_at and comment.updated_at > comment.created_at %}
+                  <span class="badge bg-light text-muted fw-normal">edited</span>
+                {% endif %}
+              </div>
+
+              <div class="dropdown">
+                <button class="btn btn-link btn-sm text-muted py-0" data-bs-toggle="dropdown">
+                  <i class="bi bi-three-dots"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item small" href="{% url 'comment-update' pk=comment.id %}">Edit</a></li>
+                  <li><a class="dropdown-item small text-danger" href="{% url 'comment-delete' pk=comment.id %}">Delete</a></li>
+                </ul>
+              </div>
             </div>
-            <p class="mb-0">{{ comment.content|linebreaksbr }}</p>
+            <p class="mb-0 small text-secondary">{{ comment.content|linebreaksbr }}</p>
           </div>
-        </div>
-      {% empty %}
-        <p>No comments yet.</p>
-      {% endfor %}
+        {% empty %}
+          <p class="text-muted small italic">No comments yet.</p>
+        {% endfor %}
+      </div>
 
       {% if user.is_authenticated %}
-        <form method="post" class="mt-3">
-          {% csrf_token %}
-          <div class="mb-2">
-            {{ comment_form.content }}
-            {% if comment_form.content.errors %}
-              <div class="text-danger">{{ comment_form.content.errors }}</div>
-            {% endif %}
-          </div>
-          <button type="submit" class="btn btn-primary btn-sm">Add comment</button>
-        </form>
-      {% else %}
-        <p><a href="{% url 'login' %}?next={{ request.path }}">Login</a> to add comments.</p>
+        <div class="p-3 bg-light border rounded-3">
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-2">
+              {{ comment_form.content }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm px-4">Post Comment</button>
+          </form>
+        </div>
       {% endif %}
-
     </div>
   </div>
 
+  <div class="col-lg-4">
+    <div class="card border-0 border-top border-3 border-primary shadow-sm bg-body-tertiary">
+      <div class="card-body">
+        <h6 class="fw-bold mb-3 text-uppercase small text-muted">Task Details</h6>
+
+        <ul class="list-unstyled mb-0">
+          <li class="mb-3">
+            <label class="d-block small text-muted mb-1">Status</label>
+            <span class="badge {% if task.is_complete %}bg-success-subtle text-success{% else %}bg-warning-subtle text-warning-emphasis{% endif %} border px-3">
+                {{ task.get_status_display }}
+            </span>
+          </li>
+
+          <li class="mb-3">
+            <label class="d-block small text-muted mb-1">Priority</label>
+            <span class="badge bg-info-subtle text-info-emphasis border px-3">
+                {{ task.get_priority_display }}
+            </span>
+          </li>
+
+          <li class="mb-3">
+            <label class="d-block small text-muted mb-1">Deadline</label>
+            <span class="fw-medium text-dark"><i class="bi bi-calendar-event me-1"></i> {{ task.deadline|date:"d M, H:i" }}</span>
+          </li>
+
+          <li class="mb-3">
+            <label class="d-block small text-muted mb-1">Task Type</label>
+            <span class="badge bg-secondary-subtle text-secondary-emphasis border">{{ task.task_type }}</span>
+          </li>
+
+          <hr>
+
+          <li class="mb-1">
+            <label class="d-block small text-muted mb-2">Assignees</label>
+            <div class="d-flex flex-wrap gap-2">
+              {% for user in task.assignee.all %}
+                <div class="d-flex align-items-center bg-white border rounded-pill px-2 py-1 shadow-sm">
+                  <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 20px; height: 20px; font-size: 10px;">
+                    {{ user.username|slice:":1"|upper }}
+                  </div>
+                  <span class="small fw-medium">{{ user.username }}</span>
+                </div>
+              {% empty %}
+                <span class="text-muted small">—</span>
+              {% endfor %}
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-4 px-2">
+        <p class="text-muted" style="font-size: 0.75rem;">
+            Created: {{ task.created_at|date:"d.m.Y H:i" }}<br>
+            {% if task.updated_at %}Last update: {{ task.updated_at|date:"d.m.Y H:i" }}{% endif %}
+        </p>
+    </div>
+  </div>
 </div>
 {% endblock %}
