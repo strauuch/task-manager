@@ -270,6 +270,9 @@ class CommentUpdateView(LoginRequiredMixin, generic.UpdateView):
     success_url = reverse_lazy("tasks-list")
     template_name = "tasks/comments_form.html"
 
+    def get_queryset(self):
+        return Comment.objects.filter(author=self.request.user)
+
     def get_success_url(self):
         return self.object.task.get_absolute_url()
 
@@ -279,6 +282,9 @@ class CommentDeleteView(LoginRequiredMixin, generic.DeleteView):
 
     model = Comment
     template_name = "tasks/comments_confirm_delete.html"
+
+    def get_queryset(self):
+        return Comment.objects.filter(author=self.request.user)
 
     def get_success_url(self):
         return self.object.task.get_absolute_url()

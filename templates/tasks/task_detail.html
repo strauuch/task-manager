@@ -5,7 +5,7 @@
   <div>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-1">
-        <li class="breadcrumb-item"><a href="{% url 'tasks-list' %}" class="small">Tasks</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'tasks-list' %}" class="small text-primary">Tasks</a></li>
         <li class="breadcrumb-item active small" aria-current="page">#{{ task.id }}</li>
       </ol>
     </nav>
@@ -13,10 +13,10 @@
   </div>
 
   <div class="d-flex gap-2">
-    <a href="{% url 'task-update' pk=task.id %}" class="btn btn-outline-primary btn-sm">
+    <a href="{% url 'task-update' pk=task.id %}" class="btn btn-primary btn-sm shadow-sm">
       <i class="bi bi-pencil"></i> Update
     </a>
-    <a href="{% url 'task-delete' pk=task.id %}?next={% url 'tasks-list' %}" class="btn btn-outline-danger btn-sm">
+    <a href="{% url 'task-delete' pk=task.id %}?next={% url 'tasks-list' %}" class="btn btn-danger-soft btn-sm">
       <i class="bi bi-trash"></i> Delete
     </a>
   </div>
@@ -46,15 +46,12 @@
                 {% endif %}
               </div>
 
-              <div class="dropdown">
-                <button class="btn btn-link btn-sm text-muted py-0" data-bs-toggle="dropdown">
-                  <i class="bi bi-three-dots"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                  <li><a class="dropdown-item small" href="{% url 'comment-update' pk=comment.id %}">Edit</a></li>
-                  <li><a class="dropdown-item small text-danger" href="{% url 'comment-delete' pk=comment.id %}">Delete</a></li>
+              {% if user.is_authenticated and user.id == comment.author.id %}
+                <ul class="d-flex gap-2 list-unstyled mb-0 ps-0">
+                  <li><a class="btn btn-ghost btn-sm shadow-sm" href="{% url 'comment-update' pk=comment.id %}">Edit</a></li>
+                  <li><a class="btn btn-danger-ghost btn-sm" href="{% url 'comment-delete' pk=comment.id %}">Delete</a></li>
                 </ul>
-              </div>
+              {% endif %}
             </div>
             <p class="mb-0 small text-secondary">{{ comment.content|linebreaksbr }}</p>
           </div>
