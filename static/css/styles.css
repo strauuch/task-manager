@@ -116,6 +116,12 @@ a:hover {
     color: #8b4d59;
 }
 
+.btn-danger-ghost:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid #8b4d59;
+    color: #8b4d59;
+}
+
 .btn-ghost {
     background-color: rgba(255, 255, 255, 0.5);
     border: 1px solid var(--bs-primary);
