@@ -48,8 +48,8 @@ class TaskTypeSearchForm(forms.Form):
         label="",
         widget=forms.TextInput(
             attrs={
-                "placeholder": "Search by name",
-                "class": "form-control",
+                "placeholder": "Search types...",
+                "class": "form-control form-control-sm",
             }
         ),
     )
