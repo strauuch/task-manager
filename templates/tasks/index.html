@@ -19,6 +19,7 @@
               <th class="ps-4 border-0 ">ID</th>
               <th class="border-0">Name</th>
               <th class="border-0">Assignees</th>
+              <th class="border-0">Task type</th>
               <th class="border-0">Priority</th>
               <th class="border-0">Status</th>
               <th class="border-0">Created</th>
@@ -46,10 +47,13 @@
                   {% endfor %}
                 </td>
                 <td class="text-muted small">
-                  {{ task.priority }}
+                  {{ task.task_type }}
                 </td>
                 <td class="text-muted small">
-                  {{ task.status }}
+                  {{ task.get_priority_display }}
+                </td>
+                <td class="text-muted small">
+                  {{ task.get_status_display }}
                 </td>
                 <td class="text-muted small">
                   {{ task.created_at|date:"d M, H:i" }}
