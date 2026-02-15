@@ -13,7 +13,7 @@ from tasks.forms import (
     WorkerCreationForm,
     TaskTypeSearchForm,
     PositionSearchForm,
-    CommentForm,
+    CommentForm, TaskTypeForm,
 )
 from tasks.models import TaskType, Task, Worker, Position, Comment
 
@@ -102,7 +102,7 @@ class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
     """View class for the create task types page of the site."""
 
     model = TaskType
-    fields = "__all__"
+    form_class = TaskTypeForm
     success_url = reverse_lazy("task-types-list")
     template_name = "tasks/task_types_form.html"
 
@@ -111,7 +111,7 @@ class TaskTypeUpdateView(LoginRequiredMixin, generic.UpdateView):
     """View class for the update task types page of the site."""
 
     model = TaskType
-    fields = "__all__"
+    form_class = TaskTypeForm
     success_url = reverse_lazy("task-types-list")
     template_name = "tasks/task_types_form.html"
 
