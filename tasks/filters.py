@@ -95,7 +95,7 @@ class TaskFilter(django_filters.FilterSet):
         if value == self.STATUS_OFF:
             return queryset.filter(status__in=["canceled", "completed", "blocked"])
         if value == self.STATUS_ALL:
-            return Task.objects.all()
+            return queryset
         return queryset
 
     def filter_deadline(self, queryset, name, value):
