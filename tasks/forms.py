@@ -44,20 +44,33 @@ class TaskForm(forms.ModelForm):
 
     class Meta:
         model = Task
-        fields = (
-            "name",
-            "task_type",
-            "priority",
-            "deadline",
-            "description",
-            "assignee",
-            "status",
-        )
+        fields = ("name", "task_type", "priority", "deadline", "description", "assignee", "status")
         widgets = {
+            "name": forms.TextInput(attrs={"placeholder": "Task Name"}),
+            "description": forms.Textarea(attrs={"placeholder": "Task Description", "rows": 3}),
             "deadline": forms.DateTimeInput(
-                attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M",
+                attrs={
+                    "type": "datetime-local",
+                    "class": "form-control",
+                },
+                format="%Y-%m-%dT%H:%M",
             ),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.label = ""
+
+            if field_name != "assignee":
+                if isinstance(field.widget, forms.Select):
+                    field.widget.attrs.update({"class": "form-select"})
+                elif not isinstance(field.widget, forms.DateTimeInput):
+                    field.widget.attrs.update({"class": "form-control"})
+
+        self.fields['task_type'].empty_label = "Select task type"
+        self.fields['priority'].empty_label = "Select priority"
+        self.fields['status'].empty_label = "Select status"
 
 
 class WorkerCreationForm(UserCreationForm):
