@@ -5,49 +5,13 @@ from django.contrib.auth.forms import UserCreationForm
 from tasks.models import Task, Worker, Comment, TaskType
 
 
-class TaskForm(forms.ModelForm):
-    assignee = forms.ModelMultipleChoiceField(
-        queryset=get_user_model().objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False,
-    )
-
-    class Meta:
-        model = Task
-        fields = (
-            "name",
-            "task_type",
-            "priority",
-            "deadline",
-            "description",
-            "assignee",
-            "status",
-        )
-        widgets = {
-            "deadline": forms.DateTimeInput(
-                attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
-            ),
-        }
-
-
-class WorkerCreationForm(UserCreationForm):
-    class Meta(UserCreationForm.Meta):
-        model = Worker
-        fields = UserCreationForm.Meta.fields + (
-            "first_name",
-            "last_name",
-            "position",
-            "email",
-        )
-
-
 class TaskTypeForm(forms.ModelForm):
     class Meta:
         model = TaskType
         fields = "__all__"
         widgets = {
             "name": forms.TextInput(attrs={
-                "placeholder": "Task type name",
+                "placeholder": "Task type name...",
                 "class": "form-control"
             })
         }
@@ -69,6 +33,42 @@ class TaskTypeSearchForm(forms.Form):
             }
         ),
     )
+
+
+class TaskForm(forms.ModelForm):
+    assignee = forms.ModelMultipleChoiceField(
+        queryset=get_user_model().objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+    )
+
+    class Meta:
+        model = Task
+        fields = (
+            "name",
+            "task_type",
+            "priority",
+            "deadline",
+            "description",
+            "assignee",
+            "status",
+        )
+        widgets = {
+            "deadline": forms.DateTimeInput(
+                attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M",
+            ),
+        }
+
+
+class WorkerCreationForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = Worker
+        fields = UserCreationForm.Meta.fields + (
+            "first_name",
+            "last_name",
+            "position",
+            "email",
+        )
 
 
 class PositionSearchForm(forms.Form):

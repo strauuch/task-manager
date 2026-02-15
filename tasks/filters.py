@@ -1,4 +1,5 @@
 import django_filters
+from django import forms
 from django.db.models import Q
 from django.utils.timezone import localdate, timedelta
 from tasks.models import Task, TaskType, Worker
@@ -30,36 +31,56 @@ class TaskFilter(django_filters.FilterSet):
         (DEADLINE_ALL, "All time"),
     ]
 
-    q = django_filters.CharFilter(method="filter_search", label="Search")
+    q = django_filters.CharFilter(
+        method="filter_search",
+        label="Search",
+        widget=forms.TextInput(attrs={
+            "class": "form-control form-control-sm",
+            "placeholder": "Search tasks..."
+        })
+    )
+
     task_type = django_filters.ModelChoiceFilter(
-        queryset=TaskType.objects.all(), label="Type", empty_label="—",
+        queryset=TaskType.objects.all(),
+        label="Type",
+        empty_label="—",
+        widget=forms.Select(attrs={"class": "form-select form-select-sm"})
     )
+
     assignee = django_filters.ModelChoiceFilter(
-        queryset=Worker.objects.all(), label="Assignee", empty_label="—",
+        queryset=Worker.objects.all(),
+        label="Assignee",
+        empty_label="—",
+        widget=forms.Select(attrs={"class": "form-select form-select-sm"})
     )
+
     priority = django_filters.ChoiceFilter(
-        choices=Task._meta.get_field("priority").choices, empty_label="—",
+        choices=Task.Priority.choices,
+        empty_label="—",
+        widget=forms.Select(attrs={"class": "form-select form-select-sm"})
     )
-    status = django_filters.ChoiceFilter(choices=Task._meta.get_field("status").choices, empty_label="—",)
+
+    status = django_filters.ChoiceFilter(
+        choices=Task.Status.choices,
+        empty_label="—",
+        widget=forms.Select(attrs={"class": "form-select form-select-sm"})
+    )
+
     active_filter = django_filters.ChoiceFilter(
         choices=STATUS_CHOICES,
         method="filter_active",
         empty_label=None,
         label="Show",
-        initial=STATUS_ACTIVE,
+        widget=forms.Select(attrs={"class": "form-select form-select-sm"})
     )
+
     deadline_filter = django_filters.ChoiceFilter(
         choices=DEADLINE_CHOICES,
         method="filter_deadline",
         label="Deadline",
         empty_label="—",
-        required=False,
-        initial=None,
+        widget=forms.Select(attrs={"class": "form-select form-select-sm"})
     )
-
-    class Meta:
-        model = Task
-        fields = ["task_type", "assignee", "priority", "status", "active_filter", "deadline_filter"]
 
     def filter_search(self, queryset, name, value):
         return queryset.filter(

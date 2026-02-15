@@ -5,9 +5,8 @@
   <h1 class="h3 mb-0 text-primary">
     Active tasks
   </h1>
-  <a href="{% url 'task-create' %}" class="btn btn-primary btn-sm shadow-sm">+ New Task</a>
+  <a href="{% url 'task-create' %}" class="btn btn-primary btn-sm shadow-sm">+ New task</a>
 </div>
-
 
 <div class="card border-0 border-top border-3 border-primary shadow-sm">
 
@@ -29,8 +28,8 @@
           <tbody>
             {% for task in active_tasks %}
               <tr class="position-relative">
-                <td class="ps-4 py-3">
-                  {{ task.id }}
+                <td class="ps-4 text-muted small">
+                  #{{ task.id }}
                 </td>
                 <td>
                   <a href="{{ task.get_absolute_url }}" class="link-dark fw-medium text-decoration-none stretched-link">

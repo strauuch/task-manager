@@ -133,16 +133,13 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        qs = Task.objects.select_related("task_type").prefetch_related("assignee")
-        if "active_filter" not in self.request.GET:
-            qs = qs.exclude(status__in=["canceled", "completed", "blocked"])
-        self.filterset = TaskFilter(self.request.GET, queryset=qs)
-        return self.filterset.qs.distinct()
+        return Task.objects.select_related("task_type").prefetch_related("assignee")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["filter"] = self.filterset
-        context["today"] = now().date()
+        f = TaskFilter(self.request.GET, queryset=self.get_queryset())
+        context["filter"] = f
+        context["tasks"] = f.qs
         return context
 
 
