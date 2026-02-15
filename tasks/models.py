@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils.timezone import now
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
@@ -59,6 +60,27 @@ class Task(models.Model):
 
     def get_absolute_url(self):
         return reverse("task-detail", kwargs={"pk": self.pk})
+
+    @property
+    def time_left(self):
+        if not self.deadline:
+            return None
+
+        delta = self.deadline - now()
+
+        if delta.total_seconds() <= 0:
+            return None
+
+        days = delta.days
+        hours, remainder = divmod(delta.seconds, 3600)
+        minutes, _ = divmod(remainder, 60)
+
+        parts = []
+        if days: parts.append(f"{days}d")
+        if hours: parts.append(f"{hours}h")
+        if minutes: parts.append(f"{minutes}m")
+
+        return " ".join(parts) if parts else "0m"
 
 
 class Position(models.Model):

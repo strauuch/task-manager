@@ -1,7 +1,4 @@
-from datetime import timezone
-
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils.timezone import now
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import generic
@@ -57,33 +54,6 @@ class IndexView(LoginRequiredMixin, TemplateView):
             .prefetch_related("assignee")
             .order_by("deadline")
         )
-
-        for task in tasks:
-            if not task.deadline:
-                task.time_left = None
-                continue
-
-            delta = task.deadline - now()
-
-            if delta.total_seconds() <= 0:
-                task.time_left = None
-                continue
-
-            days = delta.days
-            hours, remainder = divmod(delta.seconds, 3600)
-            minutes, _ = divmod(remainder, 60)
-
-            parts = []
-            if days:
-                parts.append(f"{days}d")
-            if hours:
-                parts.append(f"{hours}h")
-            if minutes:
-                parts.append(f"{minutes}m")
-
-            task.time_left = " ".join(parts)
-
-
         context["active_tasks"] = tasks
         return context
 
@@ -134,7 +104,10 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         queryset = Task.objects.select_related("task_type").prefetch_related("assignee")
-        self.filterset = TaskFilter(self.request.GET, queryset=queryset)
+        data = self.request.GET.copy()
+        if not data:
+            data['active_filter'] = 'active'
+        self.filterset = TaskFilter(data, queryset=queryset)
         return self.filterset.qs.distinct()
 
     def get_context_data(self, **kwargs):

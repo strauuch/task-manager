@@ -88,7 +88,7 @@
                 <td class="text-muted small">{{ task.get_status_display }}</td>
                 <td class="text-muted small">{{ task.created_at|date:"d M, H:i" }}</td>
                 <td class="pe-4 text-end">
-                  <span class="badge {% if task.time_left and task.time_left != 'expired' %}bg-primary-subtle text-primary-emphasis{% else %}bg-danger-subtle text-danger{% endif %} border position-relative" style="z-index: 2;">
+                  <span class="badge {% if task.time_left %}bg-primary-subtle text-primary-emphasis{% else %}bg-danger-subtle text-danger{% endif %} border position-relative" style="z-index: 2;">
                     {{ task.time_left|default:"expired" }}
                   </span>
                 </td>
