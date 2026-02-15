@@ -55,16 +55,16 @@ class TaskFilter(django_filters.FilterSet):
     )
 
     priority = django_filters.ChoiceFilter(
-        choices=Task.Priority.choices,
+        choices=Task._meta.get_field("priority").choices,
         empty_label="—",
         widget=forms.Select(attrs={"class": "form-select form-select-sm"})
-    )
+        )
 
     status = django_filters.ChoiceFilter(
-        choices=Task.Status.choices,
+        choices=Task._meta.get_field("status").choices,
         empty_label="—",
         widget=forms.Select(attrs={"class": "form-select form-select-sm"})
-    )
+        )
 
     active_filter = django_filters.ChoiceFilter(
         choices=STATUS_CHOICES,

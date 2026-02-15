@@ -133,13 +133,13 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        return Task.objects.select_related("task_type").prefetch_related("assignee")
+        queryset = Task.objects.select_related("task_type").prefetch_related("assignee")
+        self.filterset = TaskFilter(self.request.GET, queryset=queryset)
+        return self.filterset.qs.distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        f = TaskFilter(self.request.GET, queryset=self.get_queryset())
-        context["filter"] = f
-        context["tasks"] = f.qs
+        context["filter"] = self.filterset
         return context
 
 
