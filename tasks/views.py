@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic import TemplateView
+from django.db.models import Q
 
 from tasks.filters import TaskFilter
 from tasks.forms import (
@@ -10,7 +11,7 @@ from tasks.forms import (
     WorkerCreationForm,
     TaskTypeSearchForm,
     PositionSearchForm,
-    CommentForm, TaskTypeForm, WorkerForm,
+    CommentForm, TaskTypeForm, WorkerForm, WorkerSearchForm,
 )
 from tasks.models import TaskType, Task, Worker, Position, Comment
 
@@ -25,7 +26,6 @@ class SearchListViewMixin:
         if self.form.is_valid():
             q = self.form.cleaned_data.get("q")
             if q:
-                # Фильтруем по полю name (оно есть и у TaskType, и у Position)
                 return queryset.filter(name__icontains=q)
         return queryset
 
@@ -185,10 +185,23 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
     context_object_name = "workers"
     template_name = "tasks/workers_list.html"
     paginate_by = 10
+    search_form_class = WorkerSearchForm
 
     def get_queryset(self):
-        return Worker.objects.select_related("position")
+        queryset = Worker.objects.select_related("position")
+        query = self.request.GET.get("q")
+        if query:
+            queryset = queryset.filter(
+                Q(username__icontains=query) |
+                Q(last_name__icontains=query) |
+                Q(first_name__icontains=query)
+            )
+        return queryset
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_form"] = WorkerSearchForm(self.request.GET)
+        return context
 
 class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
     """View class for the worker detail page of the site."""

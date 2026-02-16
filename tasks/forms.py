@@ -94,6 +94,21 @@ class WorkerForm(forms.ModelForm):
             field.label = ""
             field.widget.attrs.update({"class": "form-control"})
 
+
+class WorkerSearchForm(forms.Form):
+    q = forms.CharField(
+        max_length=155,
+        required=False,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search workers...",
+                "class": "form-control form-control-sm",
+            }
+        ),
+    )
+
+
 class PositionSearchForm(forms.Form):
     q = forms.CharField(
         max_length=155,

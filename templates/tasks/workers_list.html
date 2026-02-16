@@ -8,6 +8,22 @@
   <a href="{% url 'worker-create' %}" class="btn btn-primary btn-sm shadow-sm">+ New worker</a>
 </div>
 
+<div class="mb-4">
+  <form method="get" class="d-flex gap-2 align-items-center">
+    <div style="max-width: 300px;">
+      {{ search_form.q }}
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-sm shadow-sm">
+      <i class="bi bi-search"></i> Search
+    </button>
+
+    {% if request.GET.q %}
+      <a href="{% url 'workers-list' %}" class="btn btn-secondary btn-sm shadow-sm">Reset</a>
+    {% endif %}
+  </form>
+</div>
+
 <div class="card border-0 border-top border-3 border-primary shadow-sm">
   <div class="card-body p-0">
     {% if workers %}
