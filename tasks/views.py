@@ -10,7 +10,7 @@ from tasks.forms import (
     WorkerCreationForm,
     TaskTypeSearchForm,
     PositionSearchForm,
-    CommentForm, TaskTypeForm,
+    CommentForm, TaskTypeForm, WorkerForm,
 )
 from tasks.models import TaskType, Task, Worker, Position, Comment
 
@@ -165,7 +165,6 @@ class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
     """View class for the task update page of the site."""
 
     model = Task
-    # fields = "__all__"
     form_class = TaskForm
     success_url = reverse_lazy("tasks-list")
     template_name = "tasks/task_form.html"
@@ -204,6 +203,22 @@ class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = WorkerCreationForm
     success_url = reverse_lazy("workers-list")
 
+
+class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
+    """View class for the worker update page of the site."""
+
+    model = Worker
+    form_class = WorkerForm
+    success_url = reverse_lazy("workers-list")
+    template_name = "tasks/worker_form.html"
+
+
+class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
+    """View class for the task delete page of the site."""
+
+    model = Worker
+    success_url = reverse_lazy("workers-list")
+    template_name = "tasks/worker_confirm_delete.html"
 
 class PositionListView(LoginRequiredMixin, SearchListViewMixin, generic.ListView):
     """View class for the positions page of the site."""
