@@ -83,6 +83,30 @@ class WorkerCreationForm(UserCreationForm):
             "email",
         )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        placeholders = {
+            "username": "Username",
+            "first_name": "First name",
+            "last_name": "Last name",
+            "email": "Email",
+        }
+
+        for field_name, field in self.fields.items():
+            field.label = ""
+
+            if field_name in placeholders:
+                field.widget.attrs["placeholder"] = placeholders[field_name]
+
+            if isinstance(field.widget, forms.Select):
+                field.widget.attrs.update({"class": "form-select"})
+            else:
+                field.widget.attrs.update({"class": "form-control"})
+
+        if "position" in self.fields:
+            self.fields['position'].empty_label = "Select position"
+
 class WorkerForm(forms.ModelForm):
     class Meta:
         model = Worker
