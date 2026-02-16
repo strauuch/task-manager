@@ -242,6 +242,12 @@ class PositionListView(LoginRequiredMixin, SearchListViewMixin, generic.ListView
     paginate_by = 10
     search_form_class = PositionSearchForm
 
+class PositionDetailView(LoginRequiredMixin, generic.DetailView):
+    """View class for the position detail page of the site."""
+
+    model = Position
+    context_object_name = "positions"
+    template_name = "tasks/positions_detail.html"
 
 class PositionCreateView(LoginRequiredMixin, generic.CreateView):
     """View class for the create positions page of the site."""
