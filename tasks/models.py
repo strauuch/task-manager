@@ -100,7 +100,7 @@ class Position(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("position-detail", kwargs={"pk": self.pk})
+        return reverse("positions-detail", kwargs={"pk": self.pk})
 
 
 class Worker(AbstractUser):
