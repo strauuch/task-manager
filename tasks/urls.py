@@ -20,7 +20,7 @@ from tasks.views import (
     TaskUpdateView,
     WorkerCreateView,
     CommentUpdateView,
-    CommentDeleteView,
+    CommentDeleteView, WorkerUpdateView, WorkerDeleteView,
 )
 
 urlpatterns = [
@@ -108,6 +108,16 @@ urlpatterns = [
         "workers/create/",
         WorkerCreateView.as_view(),
         name="worker-create",
+    ),
+    path(
+        "workers/<int:pk>/update/",
+        WorkerUpdateView.as_view(),
+        name="worker-update",
+    ),
+    path(
+        "workers/<int:pk>/delete/",
+        WorkerDeleteView.as_view(),
+        name="worker-delete",
     ),
     path(
         "workers/<int:pk>/",
