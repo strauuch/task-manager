@@ -33,19 +33,18 @@
             <tr class="small text-uppercase text-muted">
               <th class="ps-4" style="width: 80px;">ID</th>
               <th>Name</th>
-              <th class="pe-4 text-end">Actions</th>
             </tr>
           </thead>
           <tbody>
           {% for type in task_types %}
-            <tr>
-              <td class="ps-4 text-muted small">#{{ type.id }}</td>
-              <td class="fw-medium">{{ type.name }}</td>
-              <td class="pe-4 text-end">
-                <div class="d-flex justify-content-end gap-2">
-                  <a href="{% url 'task-type-update' pk=type.id %}" class="btn btn-sm btn-ghost">Update</a>
-                  <a href="{% url 'task-type-delete' pk=type.id %}" class="btn btn-sm btn-danger-ghost">Delete</a>
-                </div>
+            <tr class="position-relative">
+              <td class="ps-4 text-muted small">
+                #{{ type.id }}
+              </td>
+              <td class="fw-medium">
+                <a href="{{ type.get_absolute_url }}"
+                  class="link-dark text-decoration-none stretched-link"> {{ type.name }}
+                </a>
               </td>
             </tr>
           {% endfor %}
