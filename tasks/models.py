@@ -7,6 +7,7 @@ from django.urls import reverse
 
 class TaskType(models.Model):
     name = models.CharField(max_length=155)
+    description = models.TextField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Task Type"
