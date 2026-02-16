@@ -17,6 +17,9 @@ class TaskType(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse("task-type-detail", kwargs={"pk": self.pk})
+
 
 class Priority(models.TextChoices):
     LOW = "low", "Low"
@@ -94,6 +97,9 @@ class Position(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse("position-detail", kwargs={"pk": self.pk})
 
 
 class Worker(AbstractUser):

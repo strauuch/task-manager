@@ -42,7 +42,7 @@ urlpatterns = [
     path(
         "task-types/<int:pk>/",
         TaskTypeDetailView.as_view(),
-        name="task-detail",
+        name="task-type-detail",
     ),
     path(
         "task-types/<int:pk>/update/",
