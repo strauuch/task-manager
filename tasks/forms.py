@@ -83,6 +83,16 @@ class WorkerCreationForm(UserCreationForm):
             "email",
         )
 
+class WorkerForm(forms.ModelForm):
+    class Meta:
+        model = Worker
+        fields = ("username", "first_name", "last_name", "email", "position")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.label = ""
+            field.widget.attrs.update({"class": "form-control"})
 
 class PositionSearchForm(forms.Form):
     q = forms.CharField(
