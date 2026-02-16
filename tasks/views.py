@@ -68,6 +68,15 @@ class TaskTypeListView(LoginRequiredMixin, SearchListViewMixin, generic.ListView
     search_form_class = TaskTypeSearchForm
 
 
+class TaskTypeDetailView(LoginRequiredMixin, generic.DetailView):
+    """View class for the task type detail page of the site."""
+
+    model = TaskType
+    context_object_name = "task_type"
+    template_name = "tasks/task_types_detail.html"
+
+
+
 class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
     """View class for the create task types page of the site."""
 

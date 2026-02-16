@@ -10,6 +10,7 @@ from tasks.views import (
     WorkerDetailView,
     TaskCreateView,
     TaskTypeCreateView,
+    TaskTypeDetailView,
     TaskTypeUpdateView,
     TaskTypeDeleteView,
     PositionCreateView,
@@ -37,6 +38,11 @@ urlpatterns = [
         "task-types/create/",
         TaskTypeCreateView.as_view(),
         name="task-type-create",
+    ),
+    path(
+        "task-types/<int:pk>/",
+        TaskTypeDetailView.as_view(),
+        name="task-detail",
     ),
     path(
         "task-types/<int:pk>/update/",
