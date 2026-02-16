@@ -36,18 +36,18 @@
             </tr>
           </thead>
           <tbody>
-          {% for type in task_types %}
-            <tr class="position-relative">
-              <td class="ps-4 text-muted small">
-                #{{ type.id }}
-              </td>
-              <td class="fw-medium">
-                <a href="{{ type.get_absolute_url }}"
-                  class="link-dark text-decoration-none stretched-link"> {{ type.name }}
-                </a>
-              </td>
-            </tr>
-          {% endfor %}
+            {% for type in task_types %}
+              <tr class="position-relative">
+                <td class="ps-4 text-muted small">
+                  #{{ type.id }}
+                </td>
+                <td class="fw-medium">
+                  <a href="{{ type.get_absolute_url }}"
+                    class="link-dark text-decoration-none stretched-link"> {{ type.name }}
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
