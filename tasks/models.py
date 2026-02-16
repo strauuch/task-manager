@@ -89,6 +89,7 @@ class Task(models.Model):
 
 class Position(models.Model):
     name = models.CharField(max_length=155)
+    description = models.TextField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Position"
