@@ -1,36 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center mt-5">
   <div class="col-md-5 col-lg-4">
-    <div class="card bg-dark text-light shadow-sm mt-5">
-      <div class="card-body">
-        <h3 class="card-title text-center mb-4">Login</h3>
+    <div class="card border-0 border-top border-3 border-primary shadow-sm">
+      <div class="card-body p-4">
+        <h3 class="card-title text-center text-primary fw-bold mb-4">Login</h3>
 
         <form method="post" novalidate>
           {% csrf_token %}
 
           {% for field in form %}
             <div class="mb-3">
-              <label class="form-label" for="{{ field.id_for_label }}">
+              <label class="form-label fw-medium text-muted small" for="{{ field.id_for_label }}">
                 {{ field.label }}
               </label>
               {{ field }}
               {% if field.errors %}
-                <div class="text-danger small">
+                <div class="text-danger small mt-1">
                   {{ field.errors }}
                 </div>
               {% endif %}
             </div>
           {% endfor %}
 
-          <div class="d-grid">
-            <button type="submit" class="btn btn-primary">
+          <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-primary shadow-sm">
               Login
             </button>
           </div>
         </form>
-
       </div>
     </div>
   </div>
