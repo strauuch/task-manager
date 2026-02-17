@@ -13,12 +13,18 @@ class TaskTypeForm(forms.ModelForm):
             "name": forms.TextInput(attrs={
                 "placeholder": "Task type name...",
                 "class": "form-control"
+            }),
+            "description": forms.Textarea(attrs={
+                "placeholder": "Brief description of the position...",
+                "class": "form-control",
+                "rows": 3,
             })
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["name"].label = ""
+        self.fields["description"].label = ""
 
 
 class TaskTypeSearchForm(forms.Form):
