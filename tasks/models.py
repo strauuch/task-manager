@@ -60,7 +60,10 @@ class Task(models.Model):
         verbose_name_plural = "Tasks"
 
     def __str__(self):
-        return f"Task {self.name}, priority: {self.priority}, deadline: {self.deadline}"
+        if self.deadline:
+            return f"Task {self.name}, priority: {self.priority}, deadline: {self.deadline}"
+        else:
+            return f"Task {self.name}, priority: {self.priority}"
 
     def get_absolute_url(self):
         return reverse("task-detail", kwargs={"pk": self.pk})
@@ -100,7 +103,7 @@ class Position(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("positions-detail", kwargs={"pk": self.pk})
+        return reverse("position-detail", kwargs={"pk": self.pk})
 
 
 class Worker(AbstractUser):
