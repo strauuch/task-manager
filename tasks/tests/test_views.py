@@ -67,13 +67,13 @@ class TaskTypeViewsTests(BaseViewTestCase):
         self.login()
 
     def test_task_type_list_view(self):
-        response = self.client.get(reverse("task-types-list"))
+        response = self.client.get(reverse("task-type-list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Bug")
 
     def test_task_type_list_search(self):
         response = self.client.get(
-            reverse("task-types-list"),
+            reverse("task-type-list"),
             {"q": "Bug"}
         )
         self.assertContains(response, "Bug")
@@ -112,12 +112,12 @@ class TaskViewsTests(BaseViewTestCase):
         self.login()
 
     def test_task_list_view(self):
-        response = self.client.get(reverse("tasks-list"))
+        response = self.client.get(reverse("task-list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.task.name)
 
     def test_task_list_context(self):
-        response = self.client.get(reverse("tasks-list"))
+        response = self.client.get(reverse("task-list"))
         self.assertIn("filter", response.context)
         self.assertIn("today", response.context)
 

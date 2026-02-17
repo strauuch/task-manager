@@ -29,10 +29,12 @@ urlpatterns = [
         IndexView.as_view(),
         name="index",
     ),
+
+    # Task Types
     path(
         "task-types/",
         TaskTypeListView.as_view(),
-        name="task-types-list",
+        name="task-type-list",
     ),
     path(
         "task-types/create/",
@@ -54,10 +56,12 @@ urlpatterns = [
         TaskTypeDeleteView.as_view(),
         name="task-type-delete",
     ),
+
+    # Tasks
     path(
         "tasks/",
         TaskListView.as_view(),
-        name="tasks-list",
+        name="task-list",
     ),
     path(
         "tasks/<int:pk>/",
@@ -79,35 +83,39 @@ urlpatterns = [
         TaskDeleteView.as_view(),
         name="task-delete",
     ),
+
+    # Positions
     path(
         "positions/",
         PositionListView.as_view(),
-        name="positions-list",
+        name="position-list",
     ),
     path(
         "positions/<int:pk>/",
         PositionDetailView.as_view(),
-        name="positions-detail",
+        name="position-detail",
     ),
     path(
         "positions/create/",
         PositionCreateView.as_view(),
-        name="positions-create",
+        name="position-create",
     ),
     path(
         "positions/<int:pk>/update/",
         PositionUpdateView.as_view(),
-        name="positions-update",
+        name="position-update",
     ),
     path(
         "positions/<int:pk>/delete/",
         PositionDeleteView.as_view(),
-        name="positions-delete",
+        name="position-delete",
     ),
+
+    # Workers
     path(
         "workers/",
         WorkerListView.as_view(),
-        name="workers-list",
+        name="worker-list",
     ),
     path(
         "workers/create/",
@@ -129,6 +137,8 @@ urlpatterns = [
         WorkerDetailView.as_view(),
         name="worker-detail",
     ),
+
+    # Comments
     path(
         "comments/<int:pk>/update/",
         CommentUpdateView.as_view(),

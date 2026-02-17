@@ -17,6 +17,8 @@ from tasks.models import TaskType, Task, Worker, Position, Comment
 
 
 class SearchListViewMixin:
+    """Mixin for ListView to provide simple search functionality by 'name' field."""
+
     search_form_class = None
 
     def get_queryset(self):
@@ -35,6 +37,8 @@ class SearchListViewMixin:
         return context
 
 class IndexView(LoginRequiredMixin, TemplateView):
+    """Home page view that displays tasks assigned to the current user with active statuses."""
+
     template_name = "tasks/index.html"
 
     def get_context_data(self, **kwargs):
@@ -59,57 +63,57 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
 
 class TaskTypeListView(LoginRequiredMixin, SearchListViewMixin, generic.ListView):
-    """View class for the task types page of the site."""
+    """Displays a paginated list of task types with a search form."""
 
     model = TaskType
     context_object_name = "task_types"
-    template_name = "tasks/task_types_list.html"
+    template_name = "tasks/task_type_list.html"
     paginate_by = 10
     search_form_class = TaskTypeSearchForm
 
 
 class TaskTypeDetailView(LoginRequiredMixin, generic.DetailView):
-    """View class for the task type detail page of the site."""
+    """Displays details of a specific task type."""
 
     model = TaskType
     context_object_name = "task_type"
-    template_name = "tasks/task_types_detail.html"
+    template_name = "tasks/task_type_detail.html"
 
 
 
 class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
-    """View class for the create task types page of the site."""
+    """Provides a form to create a new task type."""
 
     model = TaskType
     form_class = TaskTypeForm
-    success_url = reverse_lazy("task-types-list")
-    template_name = "tasks/task_types_form.html"
+    success_url = reverse_lazy("task-type-list")
+    template_name = "tasks/task_type_form.html"
 
 
 class TaskTypeUpdateView(LoginRequiredMixin, generic.UpdateView):
-    """View class for the update task types page of the site."""
+    """Provides a form to update an existing task type."""
 
     model = TaskType
     form_class = TaskTypeForm
-    success_url = reverse_lazy("task-types-list")
-    template_name = "tasks/task_types_form.html"
+    success_url = reverse_lazy("task-type-list")
+    template_name = "tasks/task_type_form.html"
 
 
 class TaskTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
-    """View class for the delete task types page of the site."""
+    """Confirmation page and logic for deleting a task type."""
 
     context_object_name = "task_type"
     model = TaskType
-    success_url = reverse_lazy("task-types-list")
-    template_name = "tasks/task_types_confirm_delete.html"
+    success_url = reverse_lazy("task-type-list")
+    template_name = "tasks/task_type_confirm_delete.html"
 
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
-    """View class for the tasks page of the site."""
+    """Displays a list of all tasks with advanced filtering by status and priority."""
 
     model = Task
     context_object_name = "tasks"
-    template_name = "tasks/tasks_list.html"
+    template_name = "tasks/task_list.html"
     paginate_by = 10
 
     def get_queryset(self):
@@ -127,7 +131,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
-    """View class for the task detail page of the site."""
+    """Displays task details and handles adding new comments via POST request."""
 
     model = Task
     template_name = "tasks/task_detail.html"
@@ -154,38 +158,38 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
 
 
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
-    """View class for the task create page of the site."""
+    """Provides a form to create a new task."""
 
     model = Task
     form_class = TaskForm
-    success_url = reverse_lazy("tasks-list")
+    success_url = reverse_lazy("task-list")
     template_name = "tasks/task_form.html"
 
 
 class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
-    """View class for the task update page of the site."""
+    """Provides a form to update an existing task."""
 
     model = Task
     form_class = TaskForm
-    success_url = reverse_lazy("tasks-list")
+    success_url = reverse_lazy("task-list")
     template_name = "tasks/task_form.html"
 
 
 class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
-    """View class for the task delete page of the site."""
+    """Confirmation page and logic for deleting a task."""
 
     model = Task
     context_object_name = "task"
-    success_url = reverse_lazy("tasks-list")
+    success_url = reverse_lazy("task-list")
     template_name = "tasks/task_confirm_delete.html"
 
 
 class WorkerListView(LoginRequiredMixin, generic.ListView):
-    """View class for the workers page of the site."""
+    """Displays a list of workers with search by username, first name, and last name."""
 
     model = Worker
     context_object_name = "workers"
-    template_name = "tasks/workers_list.html"
+    template_name = "tasks/worker_list.html"
     paginate_by = 10
     search_form_class = WorkerSearchForm
 
@@ -205,87 +209,91 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
         context["search_form"] = WorkerSearchForm(self.request.GET)
         return context
 
+
 class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
-    """View class for the worker detail page of the site."""
+    """Displays the profile of a specific worker."""
 
     model = Worker
+    context_object_name = "worker"
+    template_name = "tasks/worker_detail.html"
 
 
 class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
-    """View class for the worker create page of the site."""
+    """Handles new worker registration using a custom UserCreationForm."""
 
     model = Worker
     form_class = WorkerCreationForm
-    success_url = reverse_lazy("workers-list")
+    success_url = reverse_lazy("worker-list")
+    template_name = "tasks/worker_form.html"
 
 
 class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
-    """View class for the worker update page of the site."""
+    """Provides a form for workers or admins to update user profile information."""
 
     model = Worker
     form_class = WorkerForm
-    success_url = reverse_lazy("workers-list")
+    success_url = reverse_lazy("worker-list")
     template_name = "tasks/worker_form.html"
 
 
 class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
-    """View class for the task delete page of the site."""
+    """Confirmation page and logic for deleting a worker account."""
 
     model = Worker
     context_object_name = "worker"
-    success_url = reverse_lazy("workers-list")
+    success_url = reverse_lazy("worker-list")
     template_name = "tasks/worker_confirm_delete.html"
 
 class PositionListView(LoginRequiredMixin, SearchListViewMixin, generic.ListView):
-    """View class for the positions page of the site."""
+    """Displays a paginated list of positions with search functionality."""
 
     model = Position
     context_object_name = "positions"
-    template_name = "tasks/positions_list.html"
+    template_name = "tasks/position_list.html"
     paginate_by = 10
     search_form_class = PositionSearchForm
 
 class PositionDetailView(LoginRequiredMixin, generic.DetailView):
-    """View class for the position detail page of the site."""
-
-    model = Position
-    context_object_name = "positions"
-    template_name = "tasks/positions_detail.html"
-
-class PositionCreateView(LoginRequiredMixin, generic.CreateView):
-    """View class for the create positions page of the site."""
-
-    model = Position
-    form_class = PositionForm
-    success_url = reverse_lazy("positions-list")
-    template_name = "tasks/positions_form.html"
-
-
-class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
-    """View class for the update positions page of the site."""
-
-    model = Position
-    form_class = PositionForm
-    success_url = reverse_lazy("positions-list")
-    template_name = "tasks/positions_form.html"
-
-
-class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
-    """View class for the delete positions page of the site."""
+    """Displays details of a specific position."""
 
     model = Position
     context_object_name = "position"
-    success_url = reverse_lazy("positions-list")
-    template_name = "tasks/positions_confirm_delete.html"
+    template_name = "tasks/position_detail.html"
+
+class PositionCreateView(LoginRequiredMixin, generic.CreateView):
+    """Provides a form to create a new position."""
+
+    model = Position
+    form_class = PositionForm
+    success_url = reverse_lazy("position-list")
+    template_name = "tasks/position_form.html"
+
+
+class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
+    """Provides a form to update an existing position."""
+
+    model = Position
+    form_class = PositionForm
+    success_url = reverse_lazy("position-list")
+    template_name = "tasks/position_form.html"
+
+
+class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
+    """Confirmation page and logic for deleting a position."""
+
+    model = Position
+    context_object_name = "position"
+    success_url = reverse_lazy("position-list")
+    template_name = "tasks/position_confirm_delete.html"
 
 
 class CommentUpdateView(LoginRequiredMixin, generic.UpdateView):
-    """View class for the update comment page of the site."""
+    """Allows users to edit their own comments on tasks."""
 
     model = Comment
     form_class = CommentForm
-    success_url = reverse_lazy("tasks-list")
-    template_name = "tasks/comments_form.html"
+    success_url = reverse_lazy("task-list")
+    template_name = "tasks/comment_form.html"
 
     def get_queryset(self):
         return Comment.objects.filter(author=self.request.user)
@@ -295,10 +303,10 @@ class CommentUpdateView(LoginRequiredMixin, generic.UpdateView):
 
 
 class CommentDeleteView(LoginRequiredMixin, generic.DeleteView):
-    """View class for the delete comment page of the site."""
+    """Allows users to delete their own comments on tasks."""
 
     model = Comment
-    template_name = "tasks/comments_confirm_delete.html"
+    template_name = "tasks/comment_confirm_delete.html"
 
     def get_queryset(self):
         return Comment.objects.filter(author=self.request.user)
