@@ -6,7 +6,7 @@
   <div>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-1">
-        <li class="breadcrumb-item"><a href="{% url 'positions-list' %}" class="small text-primary">Positions</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'position-list' %}" class="small text-primary">Positions</a></li>
         <li class="breadcrumb-item active small" aria-current="page">#{{ position.id }}</li>
       </ol>
     </nav>
@@ -16,7 +16,7 @@
     <a href="{% url 'position-update' pk=position.id %}" class="btn btn-primary btn-sm shadow-sm">
       <i class="bi bi-pencil"></i> Update
     </a>
-    <a href="{% url 'position-delete' pk=position.id %}?next={% url 'positions-list' %}" class="btn btn-danger-soft btn-sm">
+    <a href="{% url 'position-delete' pk=position.id %}?next={% url 'position-list' %}" class="btn btn-danger-soft btn-sm">
       <i class="bi bi-trash"></i> Delete
     </a>
   </div>

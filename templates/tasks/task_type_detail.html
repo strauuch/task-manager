@@ -6,7 +6,7 @@
   <div>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-1">
-        <li class="breadcrumb-item"><a href="{% url 'task-types-list' %}" class="small text-primary">Task types</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'task-type-list' %}" class="small text-primary">Task types</a></li>
         <li class="breadcrumb-item active small" aria-current="page">#{{ task_type.id }}</li>
       </ol>
     </nav>
@@ -16,7 +16,7 @@
     <a href="{% url 'task-type-update' pk=task_type.id %}" class="btn btn-primary btn-sm shadow-sm">
       <i class="bi bi-pencil"></i> Update
     </a>
-    <a href="{% url 'task-type-delete' pk=task_type.id %}?next={% url 'task-types-list' %}" class="btn btn-danger-soft btn-sm">
+    <a href="{% url 'task-type-delete' pk=task_type.id %}?next={% url 'task-type-list' %}" class="btn btn-danger-soft btn-sm">
       <i class="bi bi-trash"></i> Delete
     </a>
   </div>

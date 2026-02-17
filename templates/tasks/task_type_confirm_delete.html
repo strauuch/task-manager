@@ -13,7 +13,7 @@
         <h2 class="h4 fw-bold mb-3">Confirm Deletion</h2>
 
         <p class="text-muted mb-4">
-          Are you sure you want to delete the task type <span class="fw-bold text-dark">"{{ tasktype.name }}"</span>?
+          Are you sure you want to delete the task type <span class="fw-bold text-dark">"{{ task_type.name }}"</span>?
           This action cannot be undone.
         </p>
 
@@ -32,7 +32,7 @@
     </div>
 
     <div class="text-center mt-3">
-      <a href="{% url 'task-types-list' %}" class="small text-decoration-none text-muted">
+      <a href="{% url 'task-type-list' %}" class="small text-decoration-none text-muted">
         <i class="bi bi-arrow-left"></i> Back to Task Types
       </a>
     </div>
