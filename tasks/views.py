@@ -175,6 +175,7 @@ class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
     """View class for the task delete page of the site."""
 
     model = Task
+    context_object_name = "task"
     success_url = reverse_lazy("tasks-list")
     template_name = "tasks/task_confirm_delete.html"
 

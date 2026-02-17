@@ -23,7 +23,7 @@
             Yes, delete
           </button>
 
-          <a href="{% url 'tasks-list' %}" class="btn btn-ghost px-4">
+          <a href="{{ task.get_absolute_url }}" class="btn btn-ghost px-4">
             Cancel
           </a>
         </form>
