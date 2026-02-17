@@ -23,12 +23,10 @@
 </div>
 
 <div class="row g-4">
-  <div class="col-lg-8">
-    <div class="mb-5">
-      <h5 class="fw-semibold mb-3">Description</h5>
-      <div class="p-3 bg-body-tertiary rounded-3 border shadow-sm">
-        {{ task_type.description|default:"No description provided."|linebreaks }}
-      </div>
+  <div class="mb-5">
+    <h5 class="fw-semibold mb-3">Description</h5>
+    <div class="p-3 bg-body-tertiary rounded-3 border shadow-sm">
+      {{ task_type.description|default:"No description provided."|linebreaks }}
     </div>
   </div>
 </div>
