@@ -11,7 +11,7 @@ from tasks.forms import (
     WorkerCreationForm,
     TaskTypeSearchForm,
     PositionSearchForm,
-    CommentForm, TaskTypeForm, WorkerForm, WorkerSearchForm,
+    CommentForm, TaskTypeForm, WorkerForm, WorkerSearchForm, PositionForm,
 )
 from tasks.models import TaskType, Task, Worker, Position, Comment
 
@@ -253,7 +253,7 @@ class PositionCreateView(LoginRequiredMixin, generic.CreateView):
     """View class for the create positions page of the site."""
 
     model = Position
-    fields = "__all__"
+    form_class = PositionForm
     success_url = reverse_lazy("positions-list")
     template_name = "tasks/positions_form.html"
 
@@ -262,7 +262,7 @@ class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
     """View class for the update positions page of the site."""
 
     model = Position
-    fields = "__all__"
+    form_class = PositionForm
     success_url = reverse_lazy("positions-list")
     template_name = "tasks/positions_form.html"
 

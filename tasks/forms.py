@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
-from tasks.models import Task, Worker, Comment, TaskType
+from tasks.models import Task, Worker, Comment, TaskType, Position
 
 
 class TaskTypeForm(forms.ModelForm):
@@ -131,6 +131,22 @@ class WorkerSearchForm(forms.Form):
             }
         ),
     )
+
+
+class PositionForm(forms.ModelForm):
+    class Meta:
+        model = Position
+        fields = "__all__"
+        widgets = {
+            "name": forms.TextInput(attrs={
+                "placeholder": "Position name...",
+                "class": "form-control"
+            })
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["name"].label = ""
 
 
 class PositionSearchForm(forms.Form):
