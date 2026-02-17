@@ -141,13 +141,20 @@ class PositionForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(attrs={
                 "placeholder": "Position name...",
-                "class": "form-control"
+                "class": "form-control",
+                "rows": 3
+            }),
+            "description": forms.Textarea(attrs={
+                "placeholder": "Brief description of the position...",
+                "class": "form-control",
+                "rows": 3,
             })
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["name"].label = ""
+        self.fields["description"].label = ""
 
 
 class PositionSearchForm(forms.Form):
