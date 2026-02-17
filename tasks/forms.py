@@ -107,6 +107,7 @@ class WorkerCreationForm(UserCreationForm):
         if "position" in self.fields:
             self.fields['position'].empty_label = "Select position"
 
+
 class WorkerForm(forms.ModelForm):
     class Meta:
         model = Worker
@@ -168,7 +169,13 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ["content"]
         widgets = {
-            "content": forms.Textarea(
-                attrs={"rows": 3, "placeholder": "Write your comment here..."}
-            )
+            "content": forms.TextInput(attrs={
+                "placeholder": "Write comment here...",
+                "class": "form-control",
+                "rows": 3
+            })
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["content"].label = ""
