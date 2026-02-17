@@ -274,6 +274,7 @@ class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
     """View class for the delete positions page of the site."""
 
     model = Position
+    context_object_name = "position"
     success_url = reverse_lazy("positions-list")
     template_name = "tasks/positions_confirm_delete.html"
 
