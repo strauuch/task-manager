@@ -10,15 +10,16 @@ class TaskTypeForm(forms.ModelForm):
         model = TaskType
         fields = "__all__"
         widgets = {
-            "name": forms.TextInput(attrs={
-                "placeholder": "Task type name...",
-                "class": "form-control"
-            }),
-            "description": forms.Textarea(attrs={
-                "placeholder": "Brief description of the task type...",
-                "class": "form-control",
-                "rows": 3,
-            })
+            "name": forms.TextInput(
+                attrs={"placeholder": "Task type name...", "class": "form-control"}
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    "placeholder": "Brief description of the task type...",
+                    "class": "form-control",
+                    "rows": 3,
+                }
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -50,10 +51,20 @@ class TaskForm(forms.ModelForm):
 
     class Meta:
         model = Task
-        fields = ("name", "task_type", "priority", "deadline", "description", "assignee", "status")
+        fields = (
+            "name",
+            "task_type",
+            "priority",
+            "deadline",
+            "description",
+            "assignee",
+            "status",
+        )
         widgets = {
             "name": forms.TextInput(attrs={"placeholder": "Task Name"}),
-            "description": forms.Textarea(attrs={"placeholder": "Task Description", "rows": 3}),
+            "description": forms.Textarea(
+                attrs={"placeholder": "Task Description", "rows": 3}
+            ),
             "deadline": forms.DateTimeInput(
                 attrs={
                     "type": "datetime-local",
@@ -74,9 +85,9 @@ class TaskForm(forms.ModelForm):
                 elif not isinstance(field.widget, forms.DateTimeInput):
                     field.widget.attrs.update({"class": "form-control"})
 
-        self.fields['task_type'].empty_label = "Select task type"
-        self.fields['priority'].empty_label = "Select priority"
-        self.fields['status'].empty_label = "Select status"
+        self.fields["task_type"].empty_label = "Select task type"
+        self.fields["priority"].empty_label = "Select priority"
+        self.fields["status"].empty_label = "Select status"
 
 
 class WorkerCreationForm(UserCreationForm):
@@ -111,7 +122,7 @@ class WorkerCreationForm(UserCreationForm):
                 field.widget.attrs.update({"class": "form-control"})
 
         if "position" in self.fields:
-            self.fields['position'].empty_label = "Select position"
+            self.fields["position"].empty_label = "Select position"
 
 
 class WorkerForm(forms.ModelForm):
@@ -145,15 +156,19 @@ class PositionForm(forms.ModelForm):
         model = Position
         fields = "__all__"
         widgets = {
-            "name": forms.TextInput(attrs={
-                "placeholder": "Position name...",
-                "class": "form-control",
-            }),
-            "description": forms.Textarea(attrs={
-                "placeholder": "Brief description of the position...",
-                "class": "form-control",
-                "rows": 3,
-            })
+            "name": forms.TextInput(
+                attrs={
+                    "placeholder": "Position name...",
+                    "class": "form-control",
+                }
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    "placeholder": "Brief description of the position...",
+                    "class": "form-control",
+                    "rows": 3,
+                }
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -181,11 +196,13 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ["content"]
         widgets = {
-            "content": forms.Textarea(attrs={
-                "placeholder": "Write comment here...",
-                "class": "form-control",
-                "rows": 3
-            })
+            "content": forms.Textarea(
+                attrs={
+                    "placeholder": "Write comment here...",
+                    "class": "form-control",
+                    "rows": 3,
+                }
+            )
         }
 
     def __init__(self, *args, **kwargs):

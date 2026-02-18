@@ -20,7 +20,10 @@ from tasks.views import (
     TaskUpdateView,
     WorkerCreateView,
     CommentUpdateView,
-    CommentDeleteView, WorkerUpdateView, WorkerDeleteView, PositionDetailView,
+    CommentDeleteView,
+    WorkerUpdateView,
+    WorkerDeleteView,
+    PositionDetailView,
 )
 
 urlpatterns = [
@@ -29,7 +32,6 @@ urlpatterns = [
         IndexView.as_view(),
         name="index",
     ),
-
     # Task Types
     path(
         "task-types/",
@@ -56,7 +58,6 @@ urlpatterns = [
         TaskTypeDeleteView.as_view(),
         name="task-type-delete",
     ),
-
     # Tasks
     path(
         "tasks/",
@@ -83,7 +84,6 @@ urlpatterns = [
         TaskDeleteView.as_view(),
         name="task-delete",
     ),
-
     # Positions
     path(
         "positions/",
@@ -110,7 +110,6 @@ urlpatterns = [
         PositionDeleteView.as_view(),
         name="position-delete",
     ),
-
     # Workers
     path(
         "workers/",
@@ -137,7 +136,6 @@ urlpatterns = [
         WorkerDetailView.as_view(),
         name="worker-detail",
     ),
-
     # Comments
     path(
         "comments/<int:pk>/update/",

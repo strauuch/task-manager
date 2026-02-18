@@ -17,8 +17,7 @@ from tasks.models import (
 class BaseViewTestCase(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
-            username="user",
-            password="pass12345"
+            username="user", password="pass12345"
         )
 
         self.position = Position.objects.create(name="Developer")
@@ -72,10 +71,7 @@ class TaskTypeViewsTests(BaseViewTestCase):
         self.assertContains(response, "Bug")
 
     def test_task_type_list_search(self):
-        response = self.client.get(
-            reverse("task-type-list"),
-            {"q": "Bug"}
-        )
+        response = self.client.get(reverse("task-type-list"), {"q": "Bug"})
         self.assertContains(response, "Bug")
 
     def test_task_type_create(self):
@@ -122,16 +118,12 @@ class TaskViewsTests(BaseViewTestCase):
         self.assertIn("today", response.context)
 
     def test_task_detail_view(self):
-        response = self.client.get(
-            reverse("task-detail", kwargs={"pk": self.task.pk})
-        )
+        response = self.client.get(reverse("task-detail", kwargs={"pk": self.task.pk}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.task.description)
 
     def test_task_detail_404(self):
-        response = self.client.get(
-            reverse("task-detail", kwargs={"pk": 999})
-        )
+        response = self.client.get(reverse("task-detail", kwargs={"pk": 999}))
         self.assertEqual(response.status_code, 404)
 
     def test_task_create_view(self):
@@ -168,9 +160,7 @@ class TaskViewsTests(BaseViewTestCase):
         self.assertEqual(self.task.name, "Updated task")
 
     def test_task_delete_view(self):
-        response = self.client.post(
-            reverse("task-delete", kwargs={"pk": self.task.pk})
-        )
+        response = self.client.post(reverse("task-delete", kwargs={"pk": self.task.pk}))
         self.assertEqual(response.status_code, 302)
         self.assertFalse(Task.objects.filter(pk=self.task.pk).exists())
 
@@ -197,10 +187,7 @@ class WorkerAndPositionViewsTests(BaseViewTestCase):
         self.assertContains(response, self.position.name)
 
     def test_position_search(self):
-        response = self.client.get(
-            reverse("positions-list"),
-            {"q": "Dev"}
-        )
+        response = self.client.get(reverse("positions-list"), {"q": "Dev"})
         self.assertContains(response, "Developer")
 
 

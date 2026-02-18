@@ -11,7 +11,11 @@ from tasks.forms import (
     WorkerCreationForm,
     TaskTypeSearchForm,
     PositionSearchForm,
-    CommentForm, TaskTypeForm, WorkerForm, WorkerSearchForm, PositionForm,
+    CommentForm,
+    TaskTypeForm,
+    WorkerForm,
+    WorkerSearchForm,
+    PositionForm,
 )
 from tasks.models import TaskType, Task, Worker, Position, Comment
 
@@ -36,6 +40,7 @@ class SearchListViewMixin:
         context["search_form"] = self.form
         return context
 
+
 class IndexView(LoginRequiredMixin, TemplateView):
     """Home page view that displays tasks assigned to the current user with active statuses."""
 
@@ -45,15 +50,14 @@ class IndexView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         active_statuses = [
-                "pending",
-                "in_progress",
-                "paused",
-                "reviewing",
-            ]
+            "pending",
+            "in_progress",
+            "paused",
+            "reviewing",
+        ]
 
         tasks = (
-            Task.objects
-            .filter(status__in=active_statuses, assignee=self.request.user)
+            Task.objects.filter(status__in=active_statuses, assignee=self.request.user)
             .select_related("task_type")
             .prefetch_related("assignee")
             .order_by("deadline")
@@ -78,7 +82,6 @@ class TaskTypeDetailView(LoginRequiredMixin, generic.DetailView):
     model = TaskType
     context_object_name = "task_type"
     template_name = "tasks/task_type_detail.html"
-
 
 
 class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
@@ -120,7 +123,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
         queryset = Task.objects.select_related("task_type").prefetch_related("assignee")
         data = self.request.GET.copy()
         if not data:
-            data['active_filter'] = 'active'
+            data["active_filter"] = "active"
         self.filterset = TaskFilter(data, queryset=queryset)
         return self.filterset.qs.distinct()
 
@@ -198,9 +201,9 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
         query = self.request.GET.get("q")
         if query:
             queryset = queryset.filter(
-                Q(username__icontains=query) |
-                Q(last_name__icontains=query) |
-                Q(first_name__icontains=query)
+                Q(username__icontains=query)
+                | Q(last_name__icontains=query)
+                | Q(first_name__icontains=query)
             )
         return queryset
 
@@ -244,6 +247,7 @@ class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("worker-list")
     template_name = "tasks/worker_confirm_delete.html"
 
+
 class PositionListView(LoginRequiredMixin, SearchListViewMixin, generic.ListView):
     """Displays a paginated list of positions with search functionality."""
 
@@ -253,12 +257,14 @@ class PositionListView(LoginRequiredMixin, SearchListViewMixin, generic.ListView
     paginate_by = 10
     search_form_class = PositionSearchForm
 
+
 class PositionDetailView(LoginRequiredMixin, generic.DetailView):
     """Displays details of a specific position."""
 
     model = Position
     context_object_name = "position"
     template_name = "tasks/position_detail.html"
+
 
 class PositionCreateView(LoginRequiredMixin, generic.CreateView):
     """Provides a form to create a new position."""

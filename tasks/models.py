@@ -83,9 +83,12 @@ class Task(models.Model):
         minutes, _ = divmod(remainder, 60)
 
         parts = []
-        if days: parts.append(f"{days}d")
-        if hours: parts.append(f"{hours}h")
-        if minutes: parts.append(f"{minutes}m")
+        if days:
+            parts.append(f"{days}d")
+        if hours:
+            parts.append(f"{hours}h")
+        if minutes:
+            parts.append(f"{minutes}m")
 
         return " ".join(parts) if parts else "0m"
 
@@ -127,7 +130,9 @@ class Worker(AbstractUser):
 class Comment(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="comments")
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="worker_comments"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="worker_comments",
     )
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
