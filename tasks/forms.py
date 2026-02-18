@@ -15,7 +15,7 @@ class TaskTypeForm(forms.ModelForm):
                 "class": "form-control"
             }),
             "description": forms.Textarea(attrs={
-                "placeholder": "Brief description of the position...",
+                "placeholder": "Brief description of the task type...",
                 "class": "form-control",
                 "rows": 3,
             })
@@ -148,7 +148,6 @@ class PositionForm(forms.ModelForm):
             "name": forms.TextInput(attrs={
                 "placeholder": "Position name...",
                 "class": "form-control",
-                "rows": 3
             }),
             "description": forms.Textarea(attrs={
                 "placeholder": "Brief description of the position...",
@@ -182,7 +181,7 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ["content"]
         widgets = {
-            "content": forms.TextInput(attrs={
+            "content": forms.Textarea(attrs={
                 "placeholder": "Write comment here...",
                 "class": "form-control",
                 "rows": 3

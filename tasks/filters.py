@@ -87,6 +87,7 @@ class TaskFilter(django_filters.FilterSet):
             Q(name__icontains=value)
             | Q(description__icontains=value)
             | Q(task_type__name__icontains=value)
+            | Q(assignee__username__icontains=value)
         ).distinct()
 
     def filter_active(self, queryset, name, value):
