@@ -110,13 +110,15 @@ class Worker(AbstractUser):
     position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True)
 
     class Meta:
-        ordering = ["last_name"]
+        ordering = ["username"]
 
     def __str__(self):
         if self.position:
             return f"{self.username} ({self.position.name} {self.first_name} {self.last_name})"
-        else:
+        elif self.first_name and self.last_name:
             return f"{self.username} ({self.first_name} {self.last_name})"
+        else:
+            return f"{self.username}"
 
     def get_absolute_url(self):
         return reverse("worker-detail", kwargs={"pk": self.pk})
@@ -125,7 +127,7 @@ class Worker(AbstractUser):
 class Comment(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="comments")
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comments"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="worker_comments"
     )
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
