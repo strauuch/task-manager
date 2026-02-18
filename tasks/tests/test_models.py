@@ -37,9 +37,35 @@ class TaskModelTest(TestCase):
     def test_task_str(self):
         self.assertIn("Finish project", str(self.task))
 
+    def test_task_str_without_deadline(self):
+        task = Task.objects.create(
+            name="No deadline task",
+            description="Test",
+            task_type=self.task_type,
+        )
+        expected_str = f"Task {task.name}, priority: {task.priority}"
+        self.assertEqual(str(task), expected_str)
+
     def test_task_has_assignee(self):
         self.assertEqual(self.task.assignee.count(), 1)
         self.assertIn(self.user, self.task.assignee.all())
+
+    def test_task_time_left_future(self):
+        # Testing 1d 2h logic
+        self.task.deadline = timezone.now() + timezone.timedelta(days=1, hours=2)
+        self.task.save()
+        self.assertIn("1d 1h 59m", self.task.time_left)
+
+    def test_task_time_left_expired(self):
+        # Testing None result for expired deadline
+        self.task.deadline = timezone.now() - timezone.timedelta(days=1)
+        self.task.save()
+        self.assertIsNone(self.task.time_left)
+
+    def test_task_time_left_none(self):
+        # Testing None result for missing deadline
+        task = Task.objects.create(name="T", description="D", task_type=self.task_type)
+        self.assertIsNone(task.time_left)
 
     def test_task_default_status(self):
         task = Task.objects.create(
@@ -66,6 +92,16 @@ class WorkerModelTest(TestCase):
             position=self.position,
         )
 
+    def test_worker_str_minimal(self):
+        worker = get_user_model().objects.create_user(username="simple_user")
+        self.assertEqual(str(worker), "simple_user")
+
+    def test_worker_str_with_names_no_position(self):
+        worker = get_user_model().objects.create_user(
+            username="jack", first_name="Jack", last_name="Black"
+        )
+        self.assertEqual(str(worker), "jack (Jack Black)")
+
     def test_worker_str_with_position(self):
         self.assertIn("Developer", str(self.user))
         self.assertIn("Alice", str(self.user))
@@ -73,6 +109,32 @@ class WorkerModelTest(TestCase):
     def test_worker_get_absolute_url(self):
         url = self.user.get_absolute_url()
         self.assertEqual(url, reverse("worker-detail", kwargs={"pk": self.user.pk}))
+
+
+class PositionModelTest(TestCase):
+    def test_position_str(self):
+        position = Position.objects.create(name="Manager")
+        self.assertEqual(str(position), "Manager")
+
+    def test_position_get_absolute_url(self):
+        position = Position.objects.create(name="Manager")
+        self.assertEqual(
+            position.get_absolute_url(),
+            reverse("position-detail", kwargs={"pk": position.pk}),
+        )
+
+
+class TaskTypeModelTest(TestCase):
+    def test_task_type_str(self):
+        task_type = TaskType.objects.create(name="Feature")
+        self.assertEqual(str(task_type), "Feature")
+
+    def test_task_type_get_absolute_url(self):
+        task_type = TaskType.objects.create(name="Feature")
+        self.assertEqual(
+            task_type.get_absolute_url(),
+            reverse("task-type-detail", kwargs={"pk": task_type.pk}),
+        )
 
 
 class CommentModelTest(TestCase):
