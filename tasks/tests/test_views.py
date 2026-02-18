@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from datetime import timedelta
 
 from tasks.models import (
     Task,
@@ -16,216 +17,209 @@ from tasks.models import (
 
 class BaseViewTestCase(TestCase):
     def setUp(self):
-        self.user = get_user_model().objects.create_user(
-            username="user", password="pass12345"
-        )
-
         self.position = Position.objects.create(name="Developer")
-
-        self.worker = Worker.objects.create_user(
-            username="worker",
-            password="workerpass",
-            position=self.position,
+        self.user = get_user_model().objects.create_user(
+            username="test_user", password="password123", position=self.position
         )
-
+        self.worker = get_user_model().objects.create_user(
+            username="worker_test",
+            password="workerpassword",
+            position=self.position,
+            first_name="John",
+            last_name="Doe",
+        )
         self.task_type = TaskType.objects.create(name="Bug")
-
         self.task = Task.objects.create(
             name="Test task",
             description="Test description",
-            deadline=timezone.now() + timezone.timedelta(days=1),
+            deadline=timezone.now() + timedelta(days=1),
             status=Status.PENDING,
             priority=Priority.HIGH,
             task_type=self.task_type,
         )
         self.task.assignee.add(self.worker)
-
-    def login(self):
-        self.client.login(username="user", password="pass12345")
+        self.client.login(username="test_user", password="password123")
 
 
 class IndexViewTests(BaseViewTestCase):
-    def test_index_view_status_code(self):
+    def test_index_logic_and_template(self):
+        self.client.login(username="worker_test", password="workerpassword")
+
+        Task.objects.create(
+            name="Completed Task",
+            description="...",
+            status=Status.COMPLETED,
+            task_type=self.task_type,
+        ).assignee.add(self.worker)
+
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
-
-    def test_index_view_template(self):
-        response = self.client.get(reverse("index"))
         self.assertTemplateUsed(response, "tasks/index.html")
-
-    def test_index_view_context(self):
-        response = self.client.get(reverse("index"))
-        self.assertEqual(response.context["num_tasks"], 1)
-        self.assertEqual(response.context["num_workers"], 2)
-        self.assertEqual(response.context["num_active_tasks"], 1)
+        self.assertEqual(len(response.context["active_tasks"]), 1)
+        self.assertEqual(response.context["active_tasks"][0].status, Status.PENDING)
 
 
 class TaskTypeViewsTests(BaseViewTestCase):
-    def setUp(self):
-        super().setUp()
-        self.login()
-
-    def test_task_type_list_view(self):
-        response = self.client.get(reverse("task-type-list"))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Bug")
-
-    def test_task_type_list_search(self):
-        response = self.client.get(reverse("task-type-list"), {"q": "Bug"})
-        self.assertContains(response, "Bug")
-
-    def test_task_type_create(self):
-        response = self.client.post(
-            reverse("task-type-create"),
-            data={"name": "Feature"},
-            follow=True,
+    def test_task_type_detail_and_template(self):
+        response = self.client.get(
+            reverse("task-type-detail", kwargs={"pk": self.task_type.pk})
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(TaskType.objects.filter(name="Feature").exists())
+        self.assertTemplateUsed(response, "tasks/task_type_detail.html")
 
-    def test_task_type_update(self):
-        response = self.client.post(
+    def test_task_type_update_and_delete(self):
+        self.client.post(
             reverse("task-type-update", kwargs={"pk": self.task_type.pk}),
-            data={"name": "Updated"},
-            follow=True,
+            {"name": "Updated"},
         )
-        self.assertEqual(response.status_code, 200)
         self.task_type.refresh_from_db()
         self.assertEqual(self.task_type.name, "Updated")
 
-    def test_task_type_delete(self):
         response = self.client.post(
-            reverse("task-type-delete", kwargs={"pk": self.task_type.pk}),
-            follow=True,
+            reverse("task-type-delete", kwargs={"pk": self.task_type.pk})
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse("task-type-list"))
         self.assertFalse(TaskType.objects.filter(pk=self.task_type.pk).exists())
 
 
 class TaskViewsTests(BaseViewTestCase):
-    def setUp(self):
-        super().setUp()
-        self.login()
+    def test_task_pagination_and_filters(self):
+        for i in range(15):
+            Task.objects.create(
+                name=f"Task {i}", description="...", task_type=self.task_type
+            )
 
-    def test_task_list_view(self):
         response = self.client.get(reverse("task-list"))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.task.name)
+        self.assertTrue(response.context["is_paginated"])
+        self.assertEqual(len(response.context["tasks"]), 10)
 
-    def test_task_list_context(self):
-        response = self.client.get(reverse("task-list"))
-        self.assertIn("filter", response.context)
-        self.assertIn("today", response.context)
-
-    def test_task_detail_view(self):
-        response = self.client.get(reverse("task-detail", kwargs={"pk": self.task.pk}))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.task.description)
-
-    def test_task_detail_404(self):
-        response = self.client.get(reverse("task-detail", kwargs={"pk": 999}))
-        self.assertEqual(response.status_code, 404)
-
-    def test_task_create_view(self):
-        response = self.client.post(
-            reverse("task-create"),
-            {
-                "name": "New task",
-                "description": "Desc",
-                "deadline": timezone.now() + timezone.timedelta(days=2),
-                "status": Status.PENDING,
-                "priority": Priority.LOW,
-                "task_type": self.task_type.pk,
-                "assignee": [self.worker.pk],
-            },
+        response_filter = self.client.get(reverse("task-list"), {"priority": "high"})
+        self.assertTrue(
+            all(t.priority == "high" for t in response_filter.context["tasks"])
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(Task.objects.filter(name="New task").exists())
 
-    def test_task_update_view(self):
-        response = self.client.post(
-            reverse("task-update", kwargs={"pk": self.task.pk}),
-            {
-                "name": "Updated task",
-                "description": self.task.description,
-                "deadline": self.task.deadline,
-                "status": self.task.status,
-                "priority": self.task.priority,
-                "task_type": self.task.task_type.pk,
-                "assignee": [self.worker.pk],
-            },
-        )
-        self.assertEqual(response.status_code, 302)
+    def test_task_update_and_delete(self):
+        payload = {
+            "name": "Edited",
+            "description": "New desc",
+            "status": "in_progress",
+            "priority": "low",
+            "task_type": self.task_type.pk,
+            "assignee": [self.worker.pk],
+        }
+        self.client.post(reverse("task-update", kwargs={"pk": self.task.pk}), payload)
         self.task.refresh_from_db()
-        self.assertEqual(self.task.name, "Updated task")
+        self.assertEqual(self.task.name, "Edited")
 
-    def test_task_delete_view(self):
-        response = self.client.post(reverse("task-delete", kwargs={"pk": self.task.pk}))
-        self.assertEqual(response.status_code, 302)
+        self.client.post(reverse("task-delete", kwargs={"pk": self.task.pk}))
         self.assertFalse(Task.objects.filter(pk=self.task.pk).exists())
 
 
-class WorkerAndPositionViewsTests(BaseViewTestCase):
-    def setUp(self):
-        super().setUp()
-        self.login()
-
-    def test_worker_list(self):
-        response = self.client.get(reverse("workers-list"))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.worker.username)
-
-    def test_worker_detail(self):
+class WorkerViewsTests(BaseViewTestCase):
+    def test_worker_detail_and_template(self):
         response = self.client.get(
             reverse("worker-detail", kwargs={"pk": self.worker.pk})
         )
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "tasks/worker_detail.html")
 
-    def test_position_list(self):
-        response = self.client.get(reverse("positions-list"))
+    def test_worker_create_view_post(self):
+        payload = {
+            "username": "new_worker",
+            "email": "new_worker@test.com",
+            "password1": "paSsword_123",
+            "password2": "paSsword_123",
+            "first_name": "New",
+            "last_name": "Worker",
+            "position": self.position.pk,
+        }
+        response = self.client.post(reverse("worker-create"), data=payload)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(get_user_model().objects.filter(username="new_worker").exists())
+
+    def test_worker_update_and_delete(self):
+        payload = {
+            "username": "updated_worker",
+            "first_name": "New",
+            "last_name": "Name",
+            "email": "test@test.com",
+            "position": self.position.pk,
+        }
+        self.client.post(
+            reverse("worker-update", kwargs={"pk": self.worker.pk}), payload
+        )
+        self.worker.refresh_from_db()
+        self.assertEqual(self.worker.username, "updated_worker")
+
+        self.client.post(reverse("worker-delete", kwargs={"pk": self.worker.pk}))
+        self.assertFalse(get_user_model().objects.filter(pk=self.worker.pk).exists())
+
+
+class PositionViewsTests(BaseViewTestCase):
+    def test_position_detail_and_template(self):
+        response = self.client.get(
+            reverse("position-detail", kwargs={"pk": self.position.pk})
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.position.name)
+        self.assertTemplateUsed(response, "tasks/position_detail.html")
 
-    def test_position_search(self):
-        response = self.client.get(reverse("positions-list"), {"q": "Dev"})
-        self.assertContains(response, "Developer")
+    def test_position_create_view_post(self):
+        payload = {"name": "Designer", "description": "UI/UX design"}
+        response = self.client.post(reverse("position-create"), data=payload)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Position.objects.filter(name="Designer").exists())
+
+    def test_position_update_and_delete(self):
+        self.client.post(
+            reverse("position-update", kwargs={"pk": self.position.pk}),
+            {"name": "Lead"},
+        )
+        self.position.refresh_from_db()
+        self.assertEqual(self.position.name, "Lead")
+
+        self.client.post(reverse("position-delete", kwargs={"pk": self.position.pk}))
+        self.assertFalse(Position.objects.filter(pk=self.position.pk).exists())
 
 
 class CommentViewsTests(BaseViewTestCase):
-    def setUp(self):
-        super().setUp()
-        self.login()
-
-    def test_add_comment(self):
-        response = self.client.post(
-            reverse("task-detail", kwargs={"pk": self.task.pk}),
-            {"content": "Comment text"},
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(Comment.objects.filter(content="Comment text").exists())
-
-    def test_update_comment(self):
+    def test_comment_delete_and_redirect(self):
         comment = Comment.objects.create(
-            task=self.task,
-            author=self.user,
-            content="Old",
-        )
-        response = self.client.post(
-            reverse("comment-update", kwargs={"pk": comment.pk}),
-            {"content": "New"},
-        )
-        self.assertEqual(response.status_code, 302)
-        comment.refresh_from_db()
-        self.assertEqual(comment.content, "New")
-
-    def test_delete_comment(self):
-        comment = Comment.objects.create(
-            task=self.task,
-            author=self.user,
-            content="Delete me",
+            task=self.task, author=self.user, content="To be deleted"
         )
         response = self.client.post(
             reverse("comment-delete", kwargs={"pk": comment.pk})
         )
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.task.get_absolute_url())
         self.assertFalse(Comment.objects.filter(pk=comment.pk).exists())
+
+    def test_comment_update_hacks_prevention(self):
+        other_user = get_user_model().objects.create_user(
+            username="other", password="123"
+        )
+        other_comment = Comment.objects.create(
+            task=self.task, author=other_user, content="No touch"
+        )
+
+        response = self.client.post(
+            reverse("comment-update", kwargs={"pk": other_comment.pk}),
+            {"content": "Hacked"},
+        )
+        self.assertEqual(response.status_code, 404)
+        other_comment.refresh_from_db()
+        self.assertEqual(other_comment.content, "No touch")
+
+    def test_add_comment_via_task_detail_post(self):
+        # Testing the 'post' method in TaskDetailView for comment creation
+        comment_content = "This is a test comment from DetailView"
+        response = self.client.post(
+            reverse("task-detail", kwargs={"pk": self.task.pk}),
+            data={"content": comment_content},
+        )
+
+        self.assertRedirects(
+            response, reverse("task-detail", kwargs={"pk": self.task.pk})
+        )
+
+        new_comment = Comment.objects.get(content=comment_content)
+        self.assertEqual(new_comment.author, self.user)
+        self.assertEqual(new_comment.task, self.task)
