@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Task, TaskType, Position, Worker
+from .models import Task, TaskType, Position, Worker, Comment
 
 
 @admin.register(Task)
@@ -11,6 +11,7 @@ class TaskAdmin(admin.ModelAdmin):
     search_fields = ("name", "description")
     filter_horizontal = ("assignee",)
     autocomplete_fields = ("task_type",)
+    ordering = ("-created_at",)
 
 
 @admin.register(TaskType)
@@ -27,7 +28,7 @@ class PositionAdmin(admin.ModelAdmin):
 class WorkerAdmin(UserAdmin):
 
     list_display = UserAdmin.list_display + ("position",)
-    list_filter = ("position",)
+    list_filter = UserAdmin.list_filter + ("position",)
     search_fields = ("username", "first_name", "last_name")
     autocomplete_fields = ("position",)
 
@@ -46,3 +47,10 @@ class WorkerAdmin(UserAdmin):
             },
         ),
     )
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ("author", "task", "created_at")
+    list_filter = ("created_at", "author")
+    search_fields = ("content",)
