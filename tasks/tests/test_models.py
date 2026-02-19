@@ -112,6 +112,12 @@ class WorkerModelTest(TestCase):
         url = self.user.get_absolute_url()
         self.assertEqual(url, reverse("worker-detail", kwargs={"pk": self.user.pk}))
 
+    def test_worker_position_set_null_on_delete(self):
+        position_id = self.position.id
+        self.position.delete()
+        self.user.refresh_from_db()
+        self.assertIsNone(self.user.position)
+
 
 class PositionModelTest(TestCase):
     def test_position_str(self):
