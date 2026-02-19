@@ -52,7 +52,9 @@ class TaskModelTest(TestCase):
 
     def test_task_time_left_future(self):
         # Testing 1d 2h logic
-        self.task.deadline = timezone.now() + timezone.timedelta(days=1, hours=2, minutes=5)
+        self.task.deadline = timezone.now() + timezone.timedelta(
+            days=1, hours=2, minutes=5
+        )
         self.task.save()
         time_left = self.task.time_left
         self.assertIn("1d", time_left)

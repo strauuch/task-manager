@@ -1,6 +1,7 @@
 from django.test import TestCase, RequestFactory
 from tasks.templatetags.query_transform import query_transform
 
+
 class TemplateTagsTest(TestCase):
     def setUp(self):
         self.factory = RequestFactory()

@@ -4,16 +4,22 @@ from tasks.forms import (
     TaskForm,
     WorkerCreationForm,
     PositionForm,
-    WorkerSearchForm, CommentForm
+    WorkerSearchForm,
+    CommentForm,
 )
 from tasks.models import Task, TaskType, Position
+
 
 class FormLogicTest(TestCase):
     def setUp(self):
         self.task_type = TaskType.objects.create(name="Development")
         self.position = Position.objects.create(name="Developer")
-        self.worker1 = get_user_model().objects.create_user(username="w1", password="pw1")
-        self.worker2 = get_user_model().objects.create_user(username="w2", password="pw2")
+        self.worker1 = get_user_model().objects.create_user(
+            username="w1", password="pw1"
+        )
+        self.worker2 = get_user_model().objects.create_user(
+            username="w2", password="pw2"
+        )
 
     def test_task_form_save_with_assignees(self):
         form_data = {
@@ -42,7 +48,9 @@ class FormLogicTest(TestCase):
         form = WorkerCreationForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertIn("password2", form.errors)
-        self.assertEqual(form.errors["password2"], ['The two password fields didn’t match.'])
+        self.assertEqual(
+            form.errors["password2"], ["The two password fields didn’t match."]
+        )
 
     def test_position_form_save(self):
         form_data = {"name": "Manager", "description": "Team lead"}

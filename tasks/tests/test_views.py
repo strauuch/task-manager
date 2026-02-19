@@ -59,8 +59,12 @@ class IndexViewTests(BaseViewTestCase):
         self.assertEqual(response.context["active_tasks"][0].status, Status.PENDING)
 
     def test_index_view_filters_other_users_tasks(self):
-        other_user = get_user_model().objects.create_user(username="other", password="123")
-        Task.objects.create(name="Other Task", task_type=self.task_type).assignee.add(other_user)
+        other_user = get_user_model().objects.create_user(
+            username="other", password="123"
+        )
+        Task.objects.create(name="Other Task", task_type=self.task_type).assignee.add(
+            other_user
+        )
 
         self.client.login(username="worker_test", password="workerpassword")
         response = self.client.get(reverse("index"))
@@ -240,7 +244,11 @@ class CommentViewsTests(BaseViewTestCase):
         self.assertEqual(new_comment.task, self.task)
 
     def test_comment_update_by_author(self):
-        comment = Comment.objects.create(task=self.task, author=self.user, content="Old")
-        self.client.post(reverse("comment-update", kwargs={"pk": comment.pk}), {"content": "New"})
+        comment = Comment.objects.create(
+            task=self.task, author=self.user, content="Old"
+        )
+        self.client.post(
+            reverse("comment-update", kwargs={"pk": comment.pk}), {"content": "New"}
+        )
         comment.refresh_from_db()
         self.assertEqual(comment.content, "New")
