@@ -58,6 +58,14 @@ class IndexViewTests(BaseViewTestCase):
         self.assertEqual(len(response.context["active_tasks"]), 1)
         self.assertEqual(response.context["active_tasks"][0].status, Status.PENDING)
 
+    def test_index_view_filters_other_users_tasks(self):
+        other_user = get_user_model().objects.create_user(username="other", password="123")
+        Task.objects.create(name="Other Task", task_type=self.task_type).assignee.add(other_user)
+
+        self.client.login(username="worker_test", password="workerpassword")
+        response = self.client.get(reverse("index"))
+        self.assertNotContains(response, "Other Task")
+
 
 class TaskTypeViewsTests(BaseViewTestCase):
     def test_task_type_detail_and_template(self):
@@ -154,6 +162,13 @@ class WorkerViewsTests(BaseViewTestCase):
         self.client.post(reverse("worker-delete", kwargs={"pk": self.worker.pk}))
         self.assertFalse(get_user_model().objects.filter(pk=self.worker.pk).exists())
 
+    def test_worker_search(self):
+        response = self.client.get(reverse("worker-list"), {"q": "John"})
+
+        workers_in_context = response.context["workers"]
+        self.assertTrue(any(w.username == "worker_test" for w in workers_in_context))
+        self.assertFalse(any(w.username == "test_user" for w in workers_in_context))
+
 
 class PositionViewsTests(BaseViewTestCase):
     def test_position_detail_and_template(self):
@@ -223,3 +238,9 @@ class CommentViewsTests(BaseViewTestCase):
         new_comment = Comment.objects.get(content=comment_content)
         self.assertEqual(new_comment.author, self.user)
         self.assertEqual(new_comment.task, self.task)
+
+    def test_comment_update_by_author(self):
+        comment = Comment.objects.create(task=self.task, author=self.user, content="Old")
+        self.client.post(reverse("comment-update", kwargs={"pk": comment.pk}), {"content": "New"})
+        comment.refresh_from_db()
+        self.assertEqual(comment.content, "New")
