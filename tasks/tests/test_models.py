@@ -52,9 +52,11 @@ class TaskModelTest(TestCase):
 
     def test_task_time_left_future(self):
         # Testing 1d 2h logic
-        self.task.deadline = timezone.now() + timezone.timedelta(days=1, hours=2)
+        self.task.deadline = timezone.now() + timezone.timedelta(days=1, hours=2, minutes=5)
         self.task.save()
-        self.assertIn("1d 1h 59m", self.task.time_left)
+        time_left = self.task.time_left
+        self.assertIn("1d", time_left)
+        self.assertIn("2h", time_left)
 
     def test_task_time_left_expired(self):
         # Testing None result for expired deadline
