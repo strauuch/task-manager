@@ -1,7 +1,7 @@
 import django_filters
 from django import forms
 from django.db.models import Q
-from django.utils.timezone import localdate, timedelta
+from django.utils import timezone
 from tasks.models import Task, TaskType, Worker
 
 
@@ -102,20 +102,20 @@ class TaskFilter(django_filters.FilterSet):
         return queryset
 
     def filter_deadline(self, queryset, name, value):
-        today = localdate()
+        today = timezone.localdate()
 
         if value == self.DEADLINE_TODAY:
             return queryset.filter(deadline__date=today)
         if value == self.DEADLINE_OVERDUE:
             return queryset.filter(deadline__date__lt=today)
         if value == self.DEADLINE_TOMORROW:
-            return queryset.filter(deadline__date=today + timedelta(days=1))
+            return queryset.filter(deadline__date=today + timezone.timedelta(days=1))
         if value == self.DEADLINE_THIS_WEEK:
             start = today
-            end = today + timedelta(days=6 - today.weekday())
+            end = today + timezone.timedelta(days=6 - today.weekday())
             return queryset.filter(deadline__date__range=(start, end))
         if value == self.DEADLINE_NEXT_WEEK:
-            start = today + timedelta(days=7 - today.weekday())
-            end = start + timedelta(days=6)
+            start = today + timezone.timedelta(days=7 - today.weekday())
+            end = start + timezone.timedelta(days=6)
             return queryset.filter(deadline__date__range=(start, end))
         return queryset
