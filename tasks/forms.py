@@ -49,6 +49,18 @@ class TaskForm(forms.ModelForm):
         required=False,
     )
 
+    deadline = forms.DateTimeField(
+        widget=forms.DateTimeInput(
+            attrs={
+                "type": "datetime-local",
+                "class": "form-control",
+            },
+            format="%Y-%m-%dT%H:%M",
+        ),
+        input_formats=["%Y-%m-%dT%H:%M", "%Y-%m-%d %H:%M"],
+        required=False,
+    )
+
     class Meta:
         model = Task
         fields = (
@@ -64,13 +76,6 @@ class TaskForm(forms.ModelForm):
             "name": forms.TextInput(attrs={"placeholder": "Task Name"}),
             "description": forms.Textarea(
                 attrs={"placeholder": "Task Description", "rows": 3}
-            ),
-            "deadline": forms.DateTimeInput(
-                attrs={
-                    "type": "datetime-local",
-                    "class": "form-control",
-                },
-                format="%Y-%m-%dT%H:%M",
             ),
         }
 
