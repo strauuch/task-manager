@@ -8,6 +8,7 @@ django-crispy-forms==2.4
 django-debug-toolbar==6.0.0
 django-environ==0.13.0
 django-filter==25.1
+gunicorn==25.1.0
 load-dotenv==0.1.0
 mypy_extensions==1.1.0
 packaging==26.0
