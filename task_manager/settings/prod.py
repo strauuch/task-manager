@@ -1,7 +1,13 @@
 from .base import *
+import os
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG", default=False)
+
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env("SECRET_KEY")
+
 
 if DEBUG is False:
     SECURE_SSL_REDIRECT = True
@@ -27,3 +33,5 @@ DATABASES = {
         "PORT": int(os.environ.get("POSTGRES_DB_PORT")),
     }
 }
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
